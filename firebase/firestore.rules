@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for authorization & integrity
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDeviceOwner(deviceId) {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/devices/$(deviceId)) &&
+        get(/databases/$(database)/documents/devices/$(deviceId)).data.ownerId == request.auth.uid;
+    }
+
+    // 1. User Profiles Collection
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // 2. Registered Devices Collection
+    match /devices/{deviceId} {
+      // Allow read only if authenticated user is the owner
+      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+
+      // Allow registration (create) if the incoming ownerId matches authenticated user
+      allow create: if isAuthenticated() && 
+        request.resource.data.ownerId == request.auth.uid &&
+        request.resource.data.deviceId == deviceId &&
+        request.resource.data.deviceName is string &&
+        request.resource.data.status in ['online', 'offline', 'lost'];
+
+      // Allow update only by the owner, preventing ownership hijacking
+      allow update: if isAuthenticated() && 
+        resource.data.ownerId == request.auth.uid &&
+        request.resource.data.ownerId == resource.data.ownerId;
+
+      // Allow deletion only by the owner
+      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+
+      // Subcollection for device commands: /devices/{deviceId}/commands/{commandId}
+      match /commands/{commandId} {
+        // Owner can read and issue commands
+        allow read: if isDeviceOwner(deviceId);
+        
+        allow create: if isDeviceOwner(deviceId) &&
+          request.resource.data.ownerId == request.auth.uid &&
+          request.resource.data.status == 'PENDING' &&
+          request.resource.data.type in [
+            'REQUEST_LOCATION', 
+            'RING_ALARM', 
+            'ACTIVATE_LOST_MODE', 
+            'DEACTIVATE_LOST_MODE', 
+            'REMOTE_LOCK', 
+            'STATUS_CHECK'
+          ];
+
+        // Device or owner can update status (e.g. EXECUTED, FAILED, ACKNOWLEDGED)
+        allow update: if isDeviceOwner(deviceId) &&
+          request.resource.data.ownerId == resource.data.ownerId;
+
+        // Commands can be cleared by the owner
+        allow delete: if isDeviceOwner(deviceId);
+      }
+    }
+
+    // 3. Security Events & Audit Trail Collection
+    match /securityEvents/{eventId} {
+      // User can only view security events for their own devices
+      allow read: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+
+      // Events can be logged if the authenticated user owns the referenced device
+      allow create: if isAuthenticated() && 
+        request.resource.data.ownerId == request.auth.uid &&
+        request.resource.data.severity in ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] &&
+        request.resource.data.eventType is string;
+
+      // Security audit records are strictly immutable: no updates or deletes allowed
+      allow update, delete: if false;
+    }
+  }
+}

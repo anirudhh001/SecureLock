@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SecureLock Companion</string>
+    <string name="device_admin_label">SecureLock Device Protection</string>
+    <string name="device_admin_description">Enables authenticated owner to remotely lock this device via official Android Device Administration APIs when reported lost or stolen.</string>
+    <string name="lost_mode_title">DEVICE IN LOST MODE</string>
+    <string name="lost_mode_subtitle">This smartphone is actively protected by SecureLock.</string>
+    <string name="call_owner_button">CALL VERIFIED OWNER</string>
+    <string name="unlock_pin_hint">Enter Owner Unlock PIN</string>
+    <string name="unlock_button">UNLOCK DEVICE</string>
+</resources>

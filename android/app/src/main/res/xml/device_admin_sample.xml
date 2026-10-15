@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-policies>
+        <!-- Legitimate Android Device Admin Policy: Enables remote screen locking via lockNow() -->
+        <force-lock />
+        <!-- Enforces screen lock security standards -->
+        <limit-password />
+        <!-- Watches failed lock screen password attempts for tamper detection -->
+        <watch-login />
+    </uses-policies>
+</device-admin>

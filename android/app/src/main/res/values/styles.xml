@@ -1,0 +1,16 @@
+<resources>
+    <style name="Theme.SecureLock" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/cyber_cyan</item>
+        <item name="colorPrimaryVariant">@color/cyber_dark</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/cyber_dark</item>
+        <item name="android:windowBackground">@color/cyber_dark</item>
+    </style>
+
+    <style name="Theme.SecureLock.LostMode" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/cyber_dark</item>
+        <item name="android:statusBarColor">@color/cyber_danger</item>
+        <item name="android:windowShowWhenLocked">true</item>
+        <item name="android:windowTurnScreenOn">true</item>
+    </style>
+</resources>
