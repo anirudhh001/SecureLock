@@ -29,6 +29,8 @@ interface DeviceContextType {
   isSimulatorOpen: boolean;
   toggleSimulator: () => void;
   registerDevice: (deviceName: string, model: string) => Promise<{ success: boolean; deviceId: string }>;
+  enrollDeviceViaOriginalId: (deviceName: string, model: string, ownerEmail: string, ownerUid?: string) => Promise<{ success: boolean; deviceId: string }>;
+  testUnauthorizedAttackAttempt: () => Promise<void>;
   removeDevice: (deviceId: string) => Promise<boolean>;
   dispatchCommand: (deviceId: string, type: CommandType, payload?: any) => Promise<boolean>;
   requestLocation: (deviceId: string) => Promise<boolean>;
@@ -53,6 +55,8 @@ interface DeviceContextType {
   refreshDeviceStatus: (deviceId: string) => Promise<boolean>;
   addSecurityEvent: (event: Omit<SecurityEvent, 'eventId' | 'timestamp' | 'integrityHash'>) => void;
   // Simulator hooks for companion testing
+  companionMode: 'normal' | 'login';
+  setCompanionMode: (mode: 'normal' | 'login') => void;
   simulatorUnlockWithPin: (pin: string) => boolean;
   simulatorToggleAirplaneMode: () => void;
   simulatorTriggerSimRemoval: () => void;
@@ -95,6 +99,7 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   ]);
 
   const [isSimulatorOpen, setIsSimulatorOpen] = useState<boolean>(true);
+  const [companionMode, setCompanionMode] = useState<'normal' | 'login'>('normal');
 
   // Sync to localStorage for standalone persistence
   useEffect(() => {
@@ -221,6 +226,108 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return { success: true, deviceId: newId };
   };
 
+  const enrollDeviceViaOriginalId = async (
+    deviceName: string,
+    model: string,
+    ownerEmail: string,
+    targetOwnerId?: string
+  ): Promise<{ success: boolean; deviceId: string }> => {
+    const finalOwnerId = targetOwnerId || user?.uid || 'usr-cyber-owner-01';
+    const newId = 'dev-' + model.toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 7) + '-' + Math.floor(1000 + Math.random() * 9000);
+    const newDev: Device = {
+      deviceId: newId,
+      ownerId: finalOwnerId,
+      deviceName,
+      status: 'online',
+      lastSeen: new Date().toISOString(),
+      fcmToken: 'fcm_token_' + newId,
+      specs: {
+        model,
+        manufacturer: 'Android Device',
+        osVersion: 'Android 14 (API 34)',
+        apiLevel: 34,
+        securityPatchLevel: '2026-10-01',
+        deviceAdminEnabled: true,
+        rootDetected: false,
+        storageAvailableGb: 190.0,
+        storageTotalGb: 256.0,
+      },
+      battery: {
+        level: 91,
+        isCharging: false,
+        temperature: 30.2,
+        health: 'GOOD',
+      },
+      network: {
+        type: 'CELLULAR',
+        carrier: '5G Ultra-Secure',
+        ipAddress: '172.56.10.82',
+        isVpnActive: true,
+      },
+      location: {
+        latitude: 37.783333,
+        longitude: -122.416667,
+        accuracy: 4.8,
+        timestamp: new Date().toISOString(),
+        address: 'Civic Center, San Francisco, CA',
+      },
+      locationHistory: [],
+      lostMode: false,
+      lostModeMessage: 'This smartphone is protected by SecureLock. Please contact owner.',
+      recoveryContact: '+1 (555) 019-2834',
+      devicePin: '1234',
+      alarmActive: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    setDevices((prev) => [newDev, ...prev]);
+    setSelectedDeviceId(newId);
+    setCompanionMode('normal');
+
+    logToTerminal(`[ORIGINAL_ID_AUTH] Android Companion successfully authenticated with Original Owner Credentials: '${ownerEmail}' [UID: ${finalOwnerId}].`);
+    logToTerminal(`[DEVICE_LINKED] Device '${deviceName}' [${newId}] is now cryptographically bound to Owner ID '${finalOwnerId}'.`);
+
+    addSecurityEvent({
+      deviceId: newId,
+      deviceName,
+      ownerId: finalOwnerId,
+      eventType: 'DEVICE_ONLINE',
+      severity: 'LOW',
+      description: `Device '${deviceName}' linked via Original Account Authentication (${ownerEmail}). Remote control authorized.`,
+      status: 'RESOLVED',
+    });
+
+    if (isFirebaseConfigured && db) {
+      await updateDoc(doc(db, 'devices', newId), newDev as any).catch(console.error);
+    }
+
+    return { success: true, deviceId: newId };
+  };
+
+  const testUnauthorizedAttackAttempt = async (): Promise<void> => {
+    const rogueUid = 'usr-unauthorized-attacker-99';
+    const targetDev = selectedDevice || devices[0];
+    if (!targetDev) return;
+
+    logToTerminal(`[ATTACK_INTERCEPT] Rogue actor '${rogueUid}' attempting to invoke 'REMOTE_LOCK' on '${targetDev.deviceName}'...`);
+    logToTerminal(`[SECURITY_ALERT] [CRITICAL] 403 FORBIDDEN: Caller UID '${rogueUid}' does not match registered owner '${targetDev.ownerId}'. Request blocked by Firestore Security Rules!`);
+
+    addSecurityEvent({
+      deviceId: targetDev.deviceId,
+      deviceName: targetDev.deviceName,
+      ownerId: targetDev.ownerId,
+      eventType: 'UNAUTHORIZED_COMMAND_ATTEMPT',
+      severity: 'CRITICAL',
+      description: `Rogue attack attempt blocked: User '${rogueUid}' attempted unauthorized remote control on device '${targetDev.deviceName}'. Device ownership signature mismatch.`,
+      status: 'ACTION_REQUIRED',
+      metadata: {
+        rogueCallerUid: rogueUid,
+        targetOwnerId: targetDev.ownerId,
+        blockedAction: 'REMOTE_LOCK',
+      }
+    });
+  };
+
   const removeDevice = async (deviceId: string): Promise<boolean> => {
     setDevices((prev) => prev.filter((d) => d.deviceId !== deviceId));
     if (selectedDeviceId === deviceId) {
@@ -237,6 +344,25 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const dev = devices.find((d) => d.deviceId === deviceId);
     if (!dev) {
       logToTerminal(`[ERROR] Command dispatch failed: Device ${deviceId} not found.`);
+      return false;
+    }
+
+    // Strict Device Ownership Verification
+    if (user?.uid && dev.ownerId !== user.uid) {
+      logToTerminal(`[SECURITY_ALERT] [CRITICAL] UNAUTHORIZED_COMMAND_ATTEMPT: Authenticated UID '${user.uid}' does not own device '${deviceId}' (Owned by '${dev.ownerId}'). Access Denied by Firestore Security Rules!`);
+      addSecurityEvent({
+        deviceId,
+        deviceName: dev.deviceName,
+        ownerId: dev.ownerId,
+        eventType: 'UNAUTHORIZED_COMMAND_ATTEMPT',
+        severity: 'CRITICAL',
+        description: `Rogue command '${type}' blocked: Caller UID '${user.uid}' does not match registered owner '${dev.ownerId}'.`,
+        status: 'ACTION_REQUIRED',
+        metadata: {
+          attemptedBy: user.uid,
+          commandType: type,
+        }
+      });
       return false;
     }
 
@@ -592,6 +718,8 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         isSimulatorOpen,
         toggleSimulator,
         registerDevice,
+        enrollDeviceViaOriginalId,
+        testUnauthorizedAttackAttempt,
         removeDevice,
         dispatchCommand,
         requestLocation,
@@ -603,6 +731,8 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         deactivateLostMode,
         refreshDeviceStatus,
         addSecurityEvent,
+        companionMode,
+        setCompanionMode,
         simulatorUnlockWithPin,
         simulatorToggleAirplaneMode,
         simulatorTriggerSimRemoval,

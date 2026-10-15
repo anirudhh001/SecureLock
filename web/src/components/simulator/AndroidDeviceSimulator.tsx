@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDevices } from '../../context/DeviceContext';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Smartphone, 
   Wifi, 
-  WifiOff, 
   Battery, 
   BatteryCharging, 
   ShieldCheck, 
@@ -17,12 +17,17 @@ import {
   X, 
   CheckCircle2, 
   AlertTriangle,
-  RotateCcw,
   Radio,
-  Sliders
+  Sliders,
+  LogIn,
+  UserPlus,
+  ArrowRight,
+  Shield,
+  Lock
 } from 'lucide-react';
 
 export const AndroidDeviceSimulator: React.FC = () => {
+  const { user } = useAuth();
   const { 
     selectedDevice, 
     isSimulatorOpen, 
@@ -31,12 +36,23 @@ export const AndroidDeviceSimulator: React.FC = () => {
     simulatorUnlockWithPin,
     simulatorToggleAirplaneMode,
     simulatorTriggerSimRemoval,
-    simulatorUpdateBattery
+    simulatorUpdateBattery,
+    companionMode,
+    setCompanionMode,
+    enrollDeviceViaOriginalId,
+    testUnauthorizedAttackAttempt
   } = useDevices();
 
   const [enteredPin, setEnteredPin] = useState('');
   const [pinError, setPinError] = useState(false);
   const [showControlsDrawer, setShowControlsDrawer] = useState(false);
+
+  // Companion Login Form State
+  const [enrollEmail, setEnrollEmail] = useState(user?.email || 'cyber.admin@securelock.io');
+  const [enrollPassword, setEnrollPassword] = useState('Password@123');
+  const [enrollDeviceName, setEnrollDeviceName] = useState('Samsung Galaxy S24 Ultra (New)');
+  const [isSubmittingEnroll, setIsSubmittingEnroll] = useState(false);
+  const [enrollSuccessMessage, setEnrollSuccessMessage] = useState<string | null>(null);
 
   if (!isSimulatorOpen || !selectedDevice) return null;
 
@@ -50,6 +66,28 @@ export const AndroidDeviceSimulator: React.FC = () => {
       setEnteredPin('');
       setPinError(false);
     }
+  };
+
+  const handleCompanionLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!enrollEmail || !enrollPassword || !enrollDeviceName) return;
+
+    setIsSubmittingEnroll(true);
+    // Simulate authenticating original account and linking device
+    setTimeout(async () => {
+      await enrollDeviceViaOriginalId(
+        enrollDeviceName,
+        'Samsung Galaxy S24',
+        enrollEmail,
+        user?.uid
+      );
+      setIsSubmittingEnroll(false);
+      setEnrollSuccessMessage(`Device '${enrollDeviceName}' successfully linked to owner account ${enrollEmail}!`);
+      setTimeout(() => {
+        setEnrollSuccessMessage(null);
+        setCompanionMode('normal');
+      }, 1500);
+    }, 800);
   };
 
   const isAirplane = selectedDevice.network.type === 'NONE';
@@ -71,6 +109,13 @@ export const AndroidDeviceSimulator: React.FC = () => {
             <span className="font-semibold text-cyan-300 tracking-wider">ANDROID COMPANION SIM</span>
           </div>
           <div className="flex items-center gap-1.5">
+            <button 
+              onClick={() => setCompanionMode(companionMode === 'login' ? 'normal' : 'login')}
+              className={`p-1 rounded transition-colors ${companionMode === 'login' ? 'bg-cyan-600 text-white' : 'hover:bg-slate-800 text-slate-300 hover:text-white'}`}
+              title={companionMode === 'login' ? 'Return to Home' : 'Link Another Phone / Login with Original ID'}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+            </button>
             <button 
               onClick={() => setShowControlsDrawer(!showControlsDrawer)}
               className="p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-white"
@@ -289,11 +334,105 @@ export const AndroidDeviceSimulator: React.FC = () => {
               </div>
 
             </div>
+          ) : companionMode === 'login' ? (
+
+            /* SCREEN CONTENT: 3. ORIGINAL OWNER ACCOUNT LOGIN (FOR ENROLLING ANOTHER PHONE) */
+            <div className="px-5 py-3 flex-1 flex flex-col justify-between overflow-y-auto">
+              <div className="space-y-3 pt-1">
+                
+                <div className="text-center space-y-1">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mx-auto">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                    Link Another Android Phone
+                  </h4>
+                  <p className="text-[10px] text-slate-400 leading-relaxed">
+                    Sign in with your Original Owner Account to enroll this hardware to your dashboard.
+                  </p>
+                </div>
+
+                {enrollSuccessMessage && (
+                  <div className="p-2.5 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-[10px] text-emerald-300 font-semibold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>{enrollSuccessMessage}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleCompanionLoginSubmit} className="space-y-2 text-xs">
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5">
+                      Original Owner Email
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={enrollEmail}
+                      onChange={(e) => setEnrollEmail(e.target.value)}
+                      placeholder="owner@domain.com"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5">
+                      Master Account Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={enrollPassword}
+                      onChange={(e) => setEnrollPassword(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-semibold text-slate-400 mb-0.5">
+                      Device Hardware Nickname
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={enrollDeviceName}
+                      onChange={(e) => setEnrollDeviceName(e.target.value)}
+                      placeholder="e.g. Pixel 8 / Galaxy S24"
+                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                    />
+                  </div>
+
+                  <div className="pt-1 space-y-1.5">
+                    <button
+                      type="submit"
+                      disabled={isSubmittingEnroll}
+                      className="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg text-xs font-bold shadow-lg flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      <span>{isSubmittingEnroll ? 'Authenticating Owner...' : 'Authenticate & Link Device'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setCompanionMode('normal')}
+                      className="w-full py-1 text-slate-400 hover:text-white text-[10px]"
+                    >
+                      Cancel & Return to Active Phone
+                    </button>
+                  </div>
+                </form>
+
+              </div>
+
+              <div className="p-2 bg-slate-950/80 border border-slate-800 rounded-lg text-[9px] text-slate-400 text-center">
+                Owner UID: <span className="text-cyan-400 font-mono">{user?.uid || 'usr-cyber-owner-01'}</span>
+              </div>
+            </div>
           ) : (
 
-            /* SCREEN CONTENT: 3. NORMAL COMPANION APP HOME */
+            /* SCREEN CONTENT: 4. NORMAL COMPANION APP HOME */
             <div className="px-5 py-4 flex-1 flex flex-col justify-between">
-              <div className="space-y-4 pt-2">
+              <div className="space-y-3 pt-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
@@ -312,46 +451,55 @@ export const AndroidDeviceSimulator: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Device Status Card */}
-                <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 space-y-2 text-xs">
+                {/* Device Status & Bound Owner Identity Card */}
+                <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400 text-[11px]">Device Name:</span>
+                    <span className="text-slate-400 text-[10px]">Controlled Target:</span>
                     <span className="font-semibold text-slate-200">{selectedDevice.deviceName.split(' ')[0]}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400 text-[11px]">Device Admin:</span>
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> ENABLED
+                    <span className="text-slate-400 text-[10px]">Bound Owner:</span>
+                    <span className="font-mono text-[10px] text-cyan-300 truncate max-w-[150px]">
+                      {user?.email || 'cyber.admin@securelock.io'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400 text-[11px]">GPS Tracking:</span>
-                    <span className="text-cyan-400 font-semibold flex items-center gap-1">
-                      <Radio className="w-3 h-3 animate-pulse" /> HIGH ACCURACY
+                    <span className="text-slate-400 text-[10px]">Device Admin:</span>
+                    <span className="text-emerald-400 font-semibold flex items-center gap-1 text-[10px]">
+                      <CheckCircle2 className="w-3 h-3" /> ENABLED (lockNow)
                     </span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-slate-800/80 pt-1.5">
-                    <span className="text-slate-400 text-[11px]">Current Lock PIN:</span>
+                  <div className="flex items-center justify-between border-t border-slate-800/80 pt-1 text-[10px]">
+                    <span className="text-slate-400">Local Unlock PIN:</span>
                     <span className="font-mono text-cyan-300 font-bold">{selectedDevice.devicePin || '1234'}</span>
                   </div>
                 </div>
 
-                {/* Companion Telemetry info */}
-                <div className="bg-cyan-950/20 border border-cyan-500/20 rounded-xl p-3 text-[11px] space-y-1">
-                  <div className="text-cyan-400 font-semibold flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Legitimate Owner Control
-                  </div>
-                  <p className="text-slate-400 text-[10px] leading-relaxed">
-                    Companion service running in foreground with persistent notification per Android 14 requirements.
-                  </p>
+                {/* Interactive Multi-Device & Attack Testing Buttons */}
+                <div className="space-y-1.5 pt-1">
+                  <button
+                    onClick={() => setCompanionMode('login')}
+                    className="w-full py-2 px-3 rounded-lg bg-cyan-600/20 border border-cyan-500/40 hover:bg-cyan-600/30 text-cyan-200 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <UserPlus className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Pair Another Device via Original ID</span>
+                  </button>
+
+                  <button
+                    onClick={testUnauthorizedAttackAttempt}
+                    className="w-full py-2 px-3 rounded-lg bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 text-rose-300 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                    title="Simulate an attacker trying to control this phone with a rogue account ID"
+                  >
+                    <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Test Rogue Attacker Attempt</span>
+                  </button>
                 </div>
               </div>
 
               {/* Bottom Navigation Simulator Pill */}
-              <div className="py-2 text-center border-t border-slate-800/50">
+              <div className="py-1.5 text-center border-t border-slate-800/50">
                 <span className="text-[9px] text-slate-400 font-mono">
-                  Device ID: {selectedDevice.deviceId}
+                  Hardware UUID: {selectedDevice.deviceId}
                 </span>
               </div>
             </div>
@@ -371,7 +519,10 @@ export const AndroidDeviceSimulator: React.FC = () => {
       {/* Floating Indicator when Simulator is Open */}
       <div className="mt-2 text-[11px] text-slate-400 bg-slate-900/90 px-3 py-1 rounded-full border border-slate-800 flex items-center gap-1.5 shadow-lg">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span>Companion Live Synced: <strong className="text-white">{selectedDevice.deviceName.split(' ')[0]}</strong></span>
+        <span>
+          Controlled Phone: <strong className="text-white">{selectedDevice.deviceName.split(' ')[0]}</strong>
+          {' '}(Owner: <strong className="text-cyan-300">{user?.email?.split('@')[0] || 'owner'}</strong>)
+        </span>
       </div>
     </div>
   );

@@ -8,10 +8,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.securelock.companion.databinding.ActivityMainBinding
@@ -20,8 +22,8 @@ import com.securelock.companion.util.SecurityPreferences
 
 /**
  * Android Companion Setup & Enrollment Activity.
- * Orchestrates legitimate owner consent, Device Admin privilege requests,
- * and device enrollment to Firestore.
+ * Orchestrates legitimate owner consent, Original Account ID authentication,
+ * Device Admin privilege requests, and device enrollment to Firestore.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -29,10 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prefs: SecurityPreferences
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var adminComponent: ComponentName
+    private lateinit var auth: FirebaseAuth
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
+    ) { _ ->
         updateStatusChecklist()
     }
 
@@ -42,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         prefs = SecurityPreferences(this)
+        auth = FirebaseAuth.getInstance()
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         adminComponent = ComponentName(this, SecureLockDeviceAdminReceiver::class.java)
 
@@ -52,23 +56,56 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateStatusChecklist()
+        refreshEnrollmentUI()
     }
 
     private fun setupViews() {
-        binding.tvDeviceId.text = "Device ID: ${prefs.deviceId}"
-        binding.tvOwnerUid.text = "Linked Owner: ${prefs.ownerId ?: "Not Paired"}"
+        refreshEnrollmentUI()
 
-        // Enroll Device Button
-        binding.btnAuthorizeDevice.setOnClickListener {
-            val token = binding.etPairingToken.text.toString().trim()
-            if (token.isEmpty()) {
-                Toast.makeText(this, "Please enter enrollment code from Web Dashboard", Toast.LENGTH_SHORT).show()
+        // 1. Original ID Account Login Button
+        binding.btnOriginalIdLogin.setOnClickListener {
+            val email = binding.etOwnerEmail.text.toString().trim()
+            val pass = binding.etOwnerPassword.text.toString().trim()
+            val customName = binding.etDeviceNickname.text.toString().trim()
+
+            if (email.isEmpty() || pass.isEmpty()) {
+                Toast.makeText(this, "Please enter your Original Owner Email and Password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // In production, token is exchanged for owner UID via Cloud Function
+            binding.btnOriginalIdLogin.isEnabled = false
+            binding.btnOriginalIdLogin.text = "Authenticating Owner..."
+
+            // Attempt Firebase Authentication with Original Account Credentials
+            auth.signInWithEmailAndPassword(email, pass)
+                .addOnSuccessListener { authResult ->
+                    val user = authResult.user
+                    if (user != null) {
+                        prefs.ownerId = user.uid
+                        val finalDeviceName = if (customName.isNotEmpty()) customName else "${Build.MANUFACTURER} ${Build.MODEL}"
+                        enrollDeviceToFirestore(finalDeviceName, email)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    binding.btnOriginalIdLogin.isEnabled = true
+                    binding.btnOriginalIdLogin.text = "AUTHENTICATE & LINK TO OWNER"
+                    Toast.makeText(this, "Authentication failed: ${exception.message}", Toast.LENGTH_LONG).show()
+                }
+        }
+
+        // 2. Token Pairing Option (Alternative)
+        binding.btnAuthorizeDevice.setOnClickListener {
+            val token = binding.etPairingToken.text.toString().trim()
+            if (token.isEmpty()) {
+                Toast.makeText(this, "Please enter 6-digit code from Web Dashboard", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Fallback pairing with active token
+            val customName = binding.etDeviceNickname.text.toString().trim()
+            val finalDeviceName = if (customName.isNotEmpty()) customName else "${Build.MANUFACTURER} ${Build.MODEL}"
             prefs.ownerId = "usr-cyber-owner-01"
-            enrollDeviceToFirestore()
+            enrollDeviceToFirestore(finalDeviceName, "cyber.admin@securelock.io")
         }
 
         // Grant Device Admin Button
@@ -92,6 +129,21 @@ class MainActivity : AppCompatActivity() {
         binding.btnTestLostMode.setOnClickListener {
             val intent = Intent(this, LostModeActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun refreshEnrollmentUI() {
+        binding.tvDeviceId.text = "Device Hardware ID: ${prefs.deviceId}"
+        val ownerId = prefs.ownerId
+
+        if (ownerId != null) {
+            binding.tvOwnerUid.text = "Linked Owner UID: $ownerId"
+            binding.tvOwnerEmail.visibility = View.VISIBLE
+            binding.tvOwnerEmail.text = "Status: Linked & Controlled via Web Console"
+            binding.btnOriginalIdLogin.text = "RE-AUTHENTICATE / SWITCH OWNER"
+        } else {
+            binding.tvOwnerUid.text = "Linked Owner ID: Not Paired (Awaiting Login)"
+            binding.tvOwnerEmail.visibility = View.GONE
         }
     }
 
@@ -135,14 +187,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun enrollDeviceToFirestore() {
+    private fun enrollDeviceToFirestore(deviceName: String, ownerEmail: String) {
         val deviceId = prefs.deviceId
         val ownerId = prefs.ownerId ?: return
 
         val deviceDoc = hashMapOf(
             "deviceId" to deviceId,
             "ownerId" to ownerId,
-            "deviceName" to "${Build.MANUFACTURER} ${Build.MODEL}",
+            "deviceName" to deviceName,
             "status" to "online",
             "lastSeen" to FieldValue.serverTimestamp(),
             "fcmToken" to (prefs.fcmToken ?: ""),
@@ -157,17 +209,25 @@ class MainActivity : AppCompatActivity() {
                 "securityPatchLevel" to (Build.VERSION.SECURITY_PATCH ?: "Unknown"),
                 "deviceAdminEnabled" to devicePolicyManager.isAdminActive(adminComponent)
             ),
+            "battery" to hashMapOf(
+                "level" to 85,
+                "isCharging" to false
+            ),
             "createdAt" to FieldValue.serverTimestamp()
         )
 
         FirebaseFirestore.getInstance().collection("devices").document(deviceId)
             .set(deviceDoc)
             .addOnSuccessListener {
-                Toast.makeText(this, "Device successfully linked to Owner Console!", Toast.LENGTH_LONG).show()
-                binding.tvOwnerUid.text = "Linked Owner: $ownerId"
+                binding.btnOriginalIdLogin.isEnabled = true
+                binding.btnOriginalIdLogin.text = "DEVICE LINKED SUCCESSFULLY"
+                Toast.makeText(this, "Success! This device is now linked to $ownerEmail ($ownerId). You can now control it from your Web Dashboard.", Toast.LENGTH_LONG).show()
+                refreshEnrollmentUI()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Enrollment error: ${e.message}", Toast.LENGTH_SHORT).show()
+                binding.btnOriginalIdLogin.isEnabled = true
+                binding.btnOriginalIdLogin.text = "AUTHENTICATE & LINK TO OWNER"
+                Toast.makeText(this, "Firestore Enrollment error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }

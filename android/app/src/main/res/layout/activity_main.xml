@@ -42,14 +42,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Android Companion Agent v1.0"
+                    android:text="Android Companion Defense Agent"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Device Enrollment Card -->
+        <!-- Current Enrollment & Owner ID Card -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -67,7 +68,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DEVICE PAIRING &amp; ENROLLMENT"
+                    android:text="DEVICE &amp; OWNER IDENTITY"
                     android:textColor="@color/cyber_cyan"
                     android:textSize="11sp"
                     android:textStyle="bold" />
@@ -87,32 +88,139 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="Linked Owner: Not Paired"
+                    android:text="Linked Owner ID: Not Paired"
                     android:textColor="@color/text_secondary"
                     android:textSize="12sp" />
 
+                <TextView
+                    android:id="@+id/tvOwnerEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Owner Email: Not Signed In"
+                    android:textColor="@color/cyber_success"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Original ID Login Section (Authenticates and links device) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAuth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/cyber_surface"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="@color/border_color"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LINK WITH ORIGINAL OWNER ACCOUNT"
+                    android:textColor="@color/cyber_cyan"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Sign in with the original account registered on the Web Console to authorize remote controls."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+
+                <!-- Original Email -->
                 <EditText
-                    android:id="@+id/etPairingToken"
+                    android:id="@+id/etOwnerEmail"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="12dp"
                     android:background="@color/cyber_dark"
-                    android:hint="Enter 8-digit Pairing Code"
+                    android:hint="Original Owner Email (e.g. owner@domain.com)"
+                    android:inputType="textEmailAddress"
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- Original Master Password -->
+                <EditText
+                    android:id="@+id/etOwnerPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/cyber_dark"
+                    android:hint="Original Account Password"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="13sp" />
+
+                <!-- Device Custom Nickname -->
+                <EditText
+                    android:id="@+id/etDeviceNickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/cyber_dark"
+                    android:hint="Device Nickname (e.g. Pixel 8 Pro / Galaxy S24)"
                     android:paddingHorizontal="12dp"
                     android:textColor="@color/text_primary"
                     android:textColorHint="@color/text_secondary"
                     android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAuthorizeDevice"
+                    android:id="@+id/btnOriginalIdLogin"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="12dp"
                     android:backgroundTint="@color/cyber_cyan"
-                    android:text="PAIR &amp; AUTHORIZE DEVICE"
+                    android:text="AUTHENTICATE &amp; LINK TO OWNER"
                     android:textColor="@color/cyber_dark"
                     android:textStyle="bold"
                     app:cornerRadius="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:text="— OR PAIR VIA 6-DIGIT CODE —"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="10sp" />
+
+                <EditText
+                    android:id="@+id/etPairingToken"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/cyber_dark"
+                    android:hint="Enter 6-digit Web Pairing Code"
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAuthorizeDevice"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:text="PAIR WITH TOKEN"
+                    android:textColor="@color/cyber_cyan"
+                    app:cornerRadius="10dp"
+                    app:strokeColor="@color/cyber_cyan" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -205,7 +313,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/cyber_danger"
-            android:text="TEST LOST MODE SCREEN"
+            android:text="TEST LOCAL LOST MODE SCREEN"
             android:textColor="@color/text_primary"
             android:textStyle="bold"
             app:cornerRadius="10dp" />
