@@ -51,7 +51,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
             <span>DEFENSE OVERVIEW</span>
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Real-time remote telemetry, sensor surveillance, and emergency protection controls.
@@ -62,16 +62,16 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
           {selectedDevice && (
             <button
               onClick={() => refreshDeviceStatus(selectedDevice.deviceId)}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-cyan-500/50 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/80 hover:border-blue-500/50 text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-1.5 transition-all"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-cyan-400" />
+              <RefreshCw className="w-3.5 h-3.5 text-blue-400" />
               <span>Poll Status</span>
             </button>
           )}
 
           <button
             onClick={() => onNavigate('lost-mode')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 border transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 border transition-all ${
               selectedDevice?.lostMode 
                 ? 'bg-rose-500/20 border-rose-500/50 text-rose-300 cyber-glow-danger animate-pulse' 
                 : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-rose-500/40 hover:text-rose-300'
@@ -90,7 +90,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
           value={totalDevices}
           subtitle="Linked Android phones"
           icon={Smartphone}
-          variant="cyan"
+          variant="blue"
           badge="100% Owner Verified"
         />
         <MetricCard
@@ -168,9 +168,9 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
 
               {/* Location Summary and Map Shortcut */}
-              <div className="mt-4 p-4 bg-slate-950/60 border border-slate-800/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="mt-4 p-4 bg-slate-950/60 border border-slate-800 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shrink-0">
+                  <div className="p-2 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/20 shrink-0">
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
@@ -180,7 +180,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
                     <p className="text-xs font-medium text-slate-200 mt-0.5">
                       {selectedDevice.location.address || 'Market Street, San Francisco, CA'}
                     </p>
-                    <p className="text-[10px] text-slate-500 font-mono mt-0.5">
+                    <p className="text-[10px] text-slate-400 font-mono mt-0.5">
                       Coordinates: {selectedDevice.location.latitude.toFixed(5)}, {selectedDevice.location.longitude.toFixed(5)} • Error: ±{selectedDevice.location.accuracy}m
                     </p>
                   </div>
@@ -188,7 +188,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
 
                 <button
                   onClick={() => onNavigate('location')}
-                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-cyan-300 flex items-center justify-center gap-1.5 shrink-0"
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-blue-400 flex items-center justify-center gap-1.5 shrink-0"
                 >
                   <span>Open Full Map</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -205,9 +205,9 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
                   {/* Request Location */}
                   <button
                     onClick={() => requestLocation(selectedDevice.deviceId)}
-                    className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800 text-left transition-all group"
+                    className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-800 text-left transition-all group"
                   >
-                    <div className="p-2 w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition-transform mb-2">
+                    <div className="p-2 w-8 h-8 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/20 group-hover:scale-110 transition-transform mb-2">
                       <Radio className="w-4 h-4" />
                     </div>
                     <p className="text-xs font-bold text-white leading-tight">Request GPS</p>
@@ -256,7 +256,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
                     className={`p-3 rounded-xl border text-left transition-all group ${
                       selectedDevice.lostMode 
                         ? 'bg-rose-900/30 border-rose-500/80 text-rose-200 cyber-glow-danger' 
-                        : 'bg-slate-900/90 border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800'
+                        : 'bg-slate-900/90 border-slate-800 hover:border-blue-500/50 hover:bg-slate-800'
                     }`}
                   >
                     <div className="p-2 w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-110 transition-transform mb-2">
@@ -281,7 +281,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
               </p>
               <button
                 onClick={() => onNavigate('devices')}
-                className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white"
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white"
               >
                 Enroll New Device
               </button>
@@ -305,7 +305,7 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
               <button
                 onClick={() => onNavigate('history')}
-                className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1"
+                className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1"
               >
                 <span>Full Audit</span>
                 <ArrowRight className="w-3 h-3" />
@@ -340,8 +340,8 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
 
           {/* Android Restrictions & Compliance Card */}
-          <div className="bg-slate-900/80 border border-cyan-950/60 rounded-2xl p-5 space-y-2 text-xs">
-            <div className="flex items-center gap-2 text-cyan-400 font-bold">
+          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 space-y-2 text-xs">
+            <div className="flex items-center gap-2 text-blue-400 font-bold">
               <ShieldCheck className="w-4 h-4" />
               <span>Zero-Bypass Architecture</span>
             </div>

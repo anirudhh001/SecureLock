@@ -45,7 +45,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
             <span>SPATIAL LOCATION TRACKING</span>
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Target: <strong className="text-white">{selectedDevice.deviceName}</strong> ({selectedDevice.deviceId})
@@ -55,7 +55,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
         <button
           onClick={handlePollLocation}
           disabled={polling}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-950/50 flex items-center gap-2 transition-all disabled:opacity-50"
+          className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-950/40 flex items-center gap-2 transition-all disabled:opacity-50"
         >
           <Radio className={`w-4 h-4 ${polling ? 'animate-spin' : 'animate-pulse'}`} />
           <span>{polling ? 'Querying Fused GPS...' : 'Request Real-Time Location'}</span>
@@ -69,11 +69,11 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
         <div className="lg:col-span-2 bg-cyber-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-              <Compass className="w-4 h-4 text-cyan-400" />
-              <span>Live OpenStreetMap Satellite & Street Vector View</span>
+              <Compass className="w-4 h-4 text-blue-400" />
+              <span>Live OpenStreetMap Street Vector & Asset Map</span>
             </div>
             <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-              <span>Zoom: City Level</span>
+              <span>Zoom: Precision Level</span>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
           {/* Active Coordinate Card */}
           <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Navigation className="w-4 h-4 text-cyan-400" />
+              <Navigation className="w-4 h-4 text-blue-400" />
               Spatial Telemetry
             </h3>
 
@@ -110,18 +110,18 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
               <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-1">
                 <span className="text-[10px] text-slate-400 uppercase font-semibold">Street Address</span>
                 <p className="text-white font-medium leading-relaxed">
-                  {location.address || 'San Francisco, CA, United States'}
+                  {location.address || 'Resolving physical street address...'}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-0.5">
                   <span className="text-[10px] text-slate-400 uppercase font-semibold">Latitude</span>
-                  <p className="font-mono text-cyan-300 font-bold">{location.latitude.toFixed(6)}</p>
+                  <p className="font-mono text-blue-300 font-bold">{location.latitude.toFixed(6)}</p>
                 </div>
                 <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl space-y-0.5">
                   <span className="text-[10px] text-slate-400 uppercase font-semibold">Longitude</span>
-                  <p className="font-mono text-cyan-300 font-bold">{location.longitude.toFixed(6)}</p>
+                  <p className="font-mono text-blue-300 font-bold">{location.longitude.toFixed(6)}</p>
                 </div>
               </div>
 
@@ -141,7 +141,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
           {/* Breadcrumb Location Trail */}
           <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <History className="w-4 h-4 text-cyan-400" />
+              <History className="w-4 h-4 text-blue-400" />
               Recent Location Breadcrumbs
             </h3>
 
@@ -154,7 +154,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
                   >
                     <div className="flex items-center justify-between text-[10px] text-slate-400">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-cyan-400" />
+                        <Clock className="w-3 h-3 text-blue-400" />
                         {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                       </span>
                       <span className="text-emerald-400 font-mono">±{item.accuracy}m</span>

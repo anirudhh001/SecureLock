@@ -60,7 +60,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
             <span>REMOTE SECURITY COMMAND DISPATCH</span>
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
             Dispatch cryptographically signed commands directly to the Android Companion daemon on <strong className="text-white">{selectedDevice.deviceName}</strong>.
@@ -68,7 +68,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-cyan-300 bg-cyan-950/60 px-2.5 py-1 rounded-xl border border-cyan-800/50">
+          <span className="text-xs font-mono text-slate-300 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-700">
             Channel: TLS 1.3 + FCM High-Priority
           </span>
         </div>
@@ -78,13 +78,13 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* 1. High-Accuracy Location Ping */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 hover:border-blue-500/40 transition-all flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+              <div className="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
                 <MapPin className="w-5 h-5" />
               </div>
-              <span className="text-[10px] font-mono bg-slate-950 px-2 py-0.5 rounded text-cyan-300 border border-slate-800">
+              <span className="text-[10px] font-mono bg-slate-950 px-2 py-0.5 rounded text-blue-300 border border-slate-800">
                 REQUEST_LOCATION
               </span>
             </div>
@@ -99,7 +99,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
           <button
             onClick={() => handleAction('loc', () => requestLocation(selectedDevice.deviceId))}
             disabled={commandLoading === 'loc'}
-            className="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-950/50 transition-all disabled:opacity-50"
+            className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md shadow-blue-950/40 transition-all disabled:opacity-50"
           >
             <Radio className={`w-4 h-4 ${commandLoading === 'loc' ? 'animate-spin' : ''}`} />
             <span>{commandLoading === 'loc' ? 'Dispatching Ping...' : 'Dispatch Location Ping'}</span>
@@ -164,7 +164,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
             <div>
               <h3 className="font-bold text-white text-base">Instant Remote Lock</h3>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Invokes Android Device Administration API <code className="text-cyan-300">DevicePolicyManager.lockNow()</code> to instantly lock the display screen.
+                Invokes Android Device Administration API <code className="text-blue-300">DevicePolicyManager.lockNow()</code> to instantly lock the display screen.
               </p>
             </div>
           </div>
@@ -180,7 +180,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         {/* 4. Lost Mode Gateway */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 hover:border-cyan-500/40 transition-all flex flex-col justify-between">
+        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 hover:border-blue-500/40 transition-all flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
@@ -200,7 +200,7 @@ export const RemoteControlsPage: React.FC<Props> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('lost-mode')}
-            className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700 hover:border-cyan-500"
+            className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-slate-700 hover:border-blue-500"
           >
             <span>Open Lost Mode Console</span>
           </button>

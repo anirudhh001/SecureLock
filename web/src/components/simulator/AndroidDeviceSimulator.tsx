@@ -301,10 +301,10 @@ export const AndroidDeviceSimulator: React.FC = () => {
               <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 mt-2">
                 <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1.5">
                   <span className="flex items-center gap-1">
-                    <Key className="w-3 h-3 text-cyan-400" />
+                    <Key className="w-3 h-3 text-blue-400" />
                     Owner PIN Unlock
                   </span>
-                  <span className="text-slate-400">PIN: {selectedDevice.devicePin || '1234'}</span>
+                  <span className="text-slate-500 text-[10px]">Owner PIN Required</span>
                 </div>
                 <form onSubmit={handlePinSubmit} className="flex gap-1.5">
                   <input
@@ -312,16 +312,16 @@ export const AndroidDeviceSimulator: React.FC = () => {
                     maxLength={6}
                     value={enteredPin}
                     onChange={(e) => setEnteredPin(e.target.value)}
-                    placeholder="Enter PIN"
+                    placeholder="Enter Owner PIN"
                     className={`flex-1 bg-slate-900 border rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 ${
                       pinError 
                         ? 'border-rose-500 focus:ring-rose-500 animate-shake' 
-                        : 'border-slate-700 focus:ring-cyan-500'
+                        : 'border-slate-700 focus:ring-blue-500'
                     }`}
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-semibold"
+                    className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold"
                   >
                     Unlock
                   </button>
@@ -470,8 +470,8 @@ export const AndroidDeviceSimulator: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between border-t border-slate-800/80 pt-1 text-[10px]">
-                    <span className="text-slate-400">Local Unlock PIN:</span>
-                    <span className="font-mono text-cyan-300 font-bold">{selectedDevice.devicePin || '1234'}</span>
+                    <span className="text-slate-400">Deactivation PIN:</span>
+                    <span className="font-mono text-slate-400">•••• (Protected in Console)</span>
                   </div>
                 </div>
 
@@ -479,9 +479,9 @@ export const AndroidDeviceSimulator: React.FC = () => {
                 <div className="space-y-1.5 pt-1">
                   <button
                     onClick={() => setCompanionMode('login')}
-                    className="w-full py-2 px-3 rounded-lg bg-cyan-600/20 border border-cyan-500/40 hover:bg-cyan-600/30 text-cyan-200 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                    className="w-full py-2 px-3 rounded-lg bg-blue-600/15 border border-blue-500/30 hover:bg-blue-600/25 text-blue-200 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    <UserPlus className="w-3.5 h-3.5 text-cyan-400" />
+                    <UserPlus className="w-3.5 h-3.5 text-blue-400" />
                     <span>Pair Another Device via Original ID</span>
                   </button>
 

@@ -42,7 +42,7 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
   const unreadAlerts = securityEvents.filter((e) => e.severity === 'CRITICAL' || e.severity === 'HIGH').length;
 
   return (
-    <header className="sticky top-0 z-40 bg-[#070b14]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3">
+    <header className="sticky top-0 z-40 bg-[#0b0f19]/95 backdrop-blur-md border-b border-slate-800 px-4 lg:px-8 py-3">
       <div className="flex items-center justify-between gap-4">
         
         {/* Brand & Title */}
@@ -51,13 +51,13 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
             onClick={() => onNavigate('dashboard')}
             className="flex items-center gap-2.5 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center shadow-lg shadow-cyan-950/50 group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center shadow-md shadow-blue-950/50 group-hover:bg-blue-500 transition-colors">
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-base tracking-wider text-white">SECURE<span className="text-cyan-400">LOCK</span></span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/50">v4.8</span>
+                <span className="font-extrabold text-base tracking-wider text-white">SECURE<span className="text-blue-500">LOCK</span></span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">v4.8</span>
               </div>
               <p className="text-[11px] text-slate-400 font-medium">Enterprise Remote Defense & Lost Mode Console</p>
             </div>
@@ -69,9 +69,9 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
           <div className="relative">
             <button
               onClick={() => setShowDeviceDropdown(!showDeviceDropdown)}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 hover:border-cyan-500/50 text-xs font-medium text-slate-200 transition-all shadow-inner"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 hover:border-blue-500/50 text-xs font-medium text-slate-200 transition-all shadow-sm"
             >
-              <Smartphone className="w-4 h-4 text-cyan-400" />
+              <Smartphone className="w-4 h-4 text-blue-500" />
               <div className="text-left">
                 <div className="flex items-center gap-1.5">
                   <span className="font-semibold text-white">{selectedDevice ? selectedDevice.deviceName : 'Select Device'}</span>
@@ -83,7 +83,7 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
             </button>
 
             {showDeviceDropdown && (
-              <div className="absolute top-full mt-2 w-72 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl py-2 z-50">
+              <div className="absolute top-full mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-xl py-2 z-50">
                 <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
                   Registered Android Devices ({devices.length})
                 </div>
@@ -95,7 +95,7 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
                       setShowDeviceDropdown(false);
                     }}
                     className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between hover:bg-slate-800/60 transition-colors ${
-                      selectedDeviceId === device.deviceId ? 'bg-cyan-950/40 border-l-2 border-cyan-400 text-cyan-200' : 'text-slate-300'
+                      selectedDeviceId === device.deviceId ? 'bg-blue-950/40 border-l-2 border-blue-500 text-blue-200' : 'text-slate-300'
                     }`}
                   >
                     <div>
@@ -119,7 +119,7 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
                       onNavigate('devices');
                       setShowDeviceDropdown(false);
                     }}
-                    className="w-full py-1 text-center text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+                    className="w-full py-1 text-center text-xs text-blue-400 hover:text-blue-300 font-semibold"
                   >
                     + Register New Android Phone
                   </button>
@@ -161,21 +161,21 @@ export const Navbar: React.FC<Props> = ({ onNavigate, currentPage }) => {
           {/* Simulator Toggle Button */}
           <button
             onClick={toggleSimulator}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition-all ${
               isSimulatorOpen 
-                ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 cyber-glow' 
+                ? 'bg-blue-600/15 border-blue-500/40 text-blue-300' 
                 : 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white'
             }`}
             title="Toggle Live Android Companion Phone Mockup"
           >
-            <Smartphone className="w-4 h-4 text-cyan-400" />
+            <Smartphone className="w-4 h-4 text-blue-400" />
             <span className="hidden sm:inline">{isSimulatorOpen ? 'Hide Phone' : 'Phone Simulator'}</span>
           </button>
 
           {/* Security Alert Quick View */}
           <button
             onClick={() => onNavigate('security')}
-            className="relative p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all"
+            className="relative p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all"
             title="Security Center Alerts"
           >
             <Bell className="w-4 h-4" />

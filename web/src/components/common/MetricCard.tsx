@@ -6,7 +6,7 @@ interface Props {
   value: string | number;
   subtitle?: string;
   icon: LucideIcon;
-  variant?: 'cyan' | 'danger' | 'warning' | 'emerald' | 'slate';
+  variant?: 'cyan' | 'blue' | 'danger' | 'warning' | 'emerald' | 'slate';
   badge?: string;
 }
 
@@ -15,29 +15,34 @@ export const MetricCard: React.FC<Props> = ({
   value,
   subtitle,
   icon: Icon,
-  variant = 'cyan',
+  variant = 'blue',
   badge,
 }) => {
   const variantStyles = {
+    blue: {
+      border: 'border-blue-500/20 hover:border-blue-500/40',
+      iconBg: 'bg-blue-600/10 text-blue-400 border border-blue-500/20',
+      glow: 'hover:shadow-blue-950/20',
+    },
     cyan: {
-      border: 'border-cyan-500/20 hover:border-cyan-500/40',
-      iconBg: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30',
-      glow: 'hover:shadow-cyan-950/30',
+      border: 'border-blue-500/20 hover:border-blue-500/40',
+      iconBg: 'bg-blue-600/10 text-blue-400 border border-blue-500/20',
+      glow: 'hover:shadow-blue-950/20',
     },
     danger: {
       border: 'border-rose-500/30 hover:border-rose-500/50',
       iconBg: 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
-      glow: 'hover:shadow-rose-950/30 cyber-glow-danger',
+      glow: 'hover:shadow-rose-950/20',
     },
     warning: {
       border: 'border-amber-500/20 hover:border-amber-500/40',
       iconBg: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
-      glow: 'hover:shadow-amber-950/30',
+      glow: 'hover:shadow-amber-950/20',
     },
     emerald: {
       border: 'border-emerald-500/20 hover:border-emerald-500/40',
       iconBg: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
-      glow: 'hover:shadow-emerald-950/30',
+      glow: 'hover:shadow-emerald-950/20',
     },
     slate: {
       border: 'border-slate-800 hover:border-slate-700',

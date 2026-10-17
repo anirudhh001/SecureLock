@@ -127,6 +127,66 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [user]);
 
+  const resolveAddressFromCoords = async (lat: number, lon: number): Promise<string> => {
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.display_name) {
+          return data.display_name;
+        }
+      }
+    } catch {
+      // network/CORS fallback
+    }
+    return `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+  };
+
+  // Real device location detection on startup so map shows the user's actual location
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          const acc = pos.coords.accuracy;
+          const addr = await resolveAddressFromCoords(lat, lon);
+          setDevices((prev) =>
+            prev.map((d, idx) => {
+              if (idx === 0 && d.location.latitude === 37.774929 && d.location.longitude === -122.419416) {
+                const updatedLoc: DeviceLocation = {
+                  latitude: Number(lat.toFixed(6)),
+                  longitude: Number(lon.toFixed(6)),
+                  accuracy: Number((acc || 5).toFixed(1)),
+                  altitude: pos.coords.altitude != null ? Number(pos.coords.altitude.toFixed(1)) : 16.0,
+                  speed: pos.coords.speed != null ? Number(pos.coords.speed.toFixed(1)) : 0.0,
+                  timestamp: new Date().toISOString(),
+                  address: addr,
+                };
+                return {
+                  ...d,
+                  location: updatedLoc,
+                  locationHistory: [updatedLoc, ...(d.locationHistory || [])],
+                };
+              }
+              return d;
+            })
+          );
+          setTerminalLogs((prev) => [
+            `[${new Date().toLocaleTimeString()}] [GPS_INIT] Resolved real device telemetry: ${addr.split(',').slice(0, 3).join(',')}`,
+            ...prev.slice(0, 49)
+          ]);
+        },
+        () => {
+          // Geolocation permission ignored or not permitted
+        },
+        { enableHighAccuracy: true, timeout: 6000, maximumAge: 60000 }
+      );
+    }
+  }, []);
+
   const selectedDevice = devices.find((d) => d.deviceId === selectedDeviceId) || devices[0] || null;
 
   const logToTerminal = (text: string) => {
@@ -393,26 +453,30 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const requestLocation = async (deviceId: string): Promise<boolean> => {
-    logToTerminal(`[GPS_PING] Querying Android Location APIs for high-accuracy fix on device '${deviceId}'...`);
+    logToTerminal(`[GPS_PING] Querying Android FusedLocationProvider for high-accuracy fix on device '${deviceId}'...`);
     await dispatchCommand(deviceId, 'REQUEST_LOCATION');
 
-    // Simulate location jitter around San Francisco coordinates
-    setTimeout(() => {
-      const jitterLat = (Math.random() - 0.5) * 0.005;
-      const jitterLng = (Math.random() - 0.5) * 0.005;
+    const applyLocationUpdate = async (
+      latitude: number,
+      longitude: number,
+      accuracy: number,
+      altitude?: number | null,
+      speed?: number | null
+    ) => {
+      const address = await resolveAddressFromCoords(latitude, longitude);
+      const newLoc: DeviceLocation = {
+        latitude: Number(latitude.toFixed(6)),
+        longitude: Number(longitude.toFixed(6)),
+        accuracy: Number((accuracy || 6).toFixed(1)),
+        altitude: altitude != null ? Number(altitude.toFixed(1)) : 16.5,
+        speed: speed != null ? Number(speed.toFixed(1)) : 0.0,
+        timestamp: new Date().toISOString(),
+        address,
+      };
 
       setDevices((prev) =>
         prev.map((d) => {
           if (d.deviceId === deviceId) {
-            const newLoc: DeviceLocation = {
-              latitude: Number((d.location.latitude + jitterLat).toFixed(6)),
-              longitude: Number((d.location.longitude + jitterLng).toFixed(6)),
-              accuracy: Number((4 + Math.random() * 8).toFixed(1)),
-              altitude: Number((15 + Math.random() * 10).toFixed(1)),
-              speed: 0.0,
-              timestamp: new Date().toISOString(),
-              address: '742 Market Street, Financial District, San Francisco, CA',
-            };
             return {
               ...d,
               lastSeen: new Date().toISOString(),
@@ -424,16 +488,48 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         })
       );
 
+      const shortAddress = address.split(',').slice(0, 3).join(',');
       addSecurityEvent({
         deviceId,
         deviceName: selectedDevice?.deviceName,
         ownerId: user?.uid || 'usr-cyber-owner-01',
         eventType: 'LOCATION_POLL_REQUESTED',
         severity: 'LOW',
-        description: `High-accuracy GPS location fix updated via FusedLocationProvider. Accuracy radius: ~6m.`,
+        description: `High-accuracy GPS location fix updated via FusedLocationProvider at ${shortAddress} (±${newLoc.accuracy}m).`,
         status: 'RESOLVED',
       });
-    }, 900);
+
+      logToTerminal(`[GPS_SUCCESS] FusedLocationProvider returned fix: Lat ${newLoc.latitude}, Lng ${newLoc.longitude} (${shortAddress}, ±${newLoc.accuracy}m).`);
+    };
+
+    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          applyLocationUpdate(
+            pos.coords.latitude,
+            pos.coords.longitude,
+            pos.coords.accuracy,
+            pos.coords.altitude,
+            pos.coords.speed
+          );
+        },
+        (err) => {
+          console.warn('[Geolocation] GPS fallback notice:', err.message);
+          const target = devices.find((d) => d.deviceId === deviceId);
+          const baseLat = target?.location.latitude || 28.6139;
+          const baseLng = target?.location.longitude || 77.2090;
+          const jitterLat = (Math.random() - 0.5) * 0.002;
+          const jitterLng = (Math.random() - 0.5) * 0.002;
+          applyLocationUpdate(baseLat + jitterLat, baseLng + jitterLng, 8.5);
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+      );
+    } else {
+      const target = devices.find((d) => d.deviceId === deviceId);
+      const baseLat = target?.location.latitude || 28.6139;
+      const baseLng = target?.location.longitude || 77.2090;
+      applyLocationUpdate(baseLat, baseLng, 9.0);
+    }
 
     return true;
   };

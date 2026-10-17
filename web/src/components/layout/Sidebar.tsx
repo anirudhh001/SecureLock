@@ -48,14 +48,14 @@ export const Sidebar: React.FC<Props> = ({ currentPage, onNavigate }) => {
   ];
 
   return (
-    <aside className="w-64 bg-[#0a0f1d] border-r border-slate-800/80 flex flex-col justify-between shrink-0 min-h-[calc(100vh-65px)]">
+    <aside className="w-64 bg-[#0b0f19] border-r border-slate-800 flex flex-col justify-between shrink-0 min-h-[calc(100vh-65px)]">
       
       {/* Navigation List */}
       <div className="p-4 space-y-6">
         
         {/* Device Quick Status Chip */}
         {selectedDevice && (
-          <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs shadow-sm">
             <div className="flex items-center justify-between text-slate-400 text-[10px] uppercase font-semibold">
               <span>Controlled Target</span>
               <span className={`flex items-center gap-1 ${selectedDevice.status === 'online' ? 'text-emerald-400' : selectedDevice.status === 'lost' ? 'text-rose-400' : 'text-slate-500'}`}>
@@ -63,7 +63,7 @@ export const Sidebar: React.FC<Props> = ({ currentPage, onNavigate }) => {
               </span>
             </div>
             <p className="font-bold text-white text-sm truncate mt-1">{selectedDevice.deviceName}</p>
-            <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800/80">
+            <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
               <span>Battery: {selectedDevice.battery.level}%</span>
               <span>OS: Android {selectedDevice.specs.apiLevel >= 34 ? '14' : '13'}</span>
             </div>
@@ -72,7 +72,7 @@ export const Sidebar: React.FC<Props> = ({ currentPage, onNavigate }) => {
 
         {/* Section Links */}
         <div className="space-y-1">
-          <p className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+          <p className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
             Defense Modules
           </p>
           {navItems.map((item) => {
@@ -83,14 +83,14 @@ export const Sidebar: React.FC<Props> = ({ currentPage, onNavigate }) => {
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 shadow-sm shadow-cyan-950/40'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                    ? 'bg-blue-600/15 border border-blue-500/30 text-blue-300 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-850'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
                 </div>
 
@@ -103,7 +103,7 @@ export const Sidebar: React.FC<Props> = ({ currentPage, onNavigate }) => {
                       {item.badge}
                     </span>
                   )}
-                  <ChevronRight className={`w-3 h-3 opacity-0 group-hover:opacity-100 ${isActive ? 'opacity-100 text-cyan-400' : 'text-slate-600'}`} />
+                  <ChevronRight className={`w-3 h-3 ${isActive ? 'text-blue-400' : 'text-slate-600'}`} />
                 </div>
               </button>
             );

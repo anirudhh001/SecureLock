@@ -175,7 +175,7 @@ export const CustomLostMessagePage: React.FC<Props> = ({ onNavigate }) => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="e.g. This phone has been lost. Please contact the owner."
-                className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all leading-relaxed"
+                className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all leading-relaxed"
               />
             </div>
 
@@ -185,14 +185,14 @@ export const CustomLostMessagePage: React.FC<Props> = ({ onNavigate }) => {
                 Recovery Phone Number (Direct Single-Tap Dialer)
               </label>
               <div className="relative">
-                <PhoneCall className="w-4 h-4 text-cyan-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <PhoneCall className="w-4 h-4 text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="tel"
                   required
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   placeholder="e.g. +1 (555) 987-6543 or 98XXXXXXXX"
-                  className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
+                  className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white font-mono placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <p className="text-[11px] text-slate-400 mt-1">
@@ -210,17 +210,17 @@ export const CustomLostMessagePage: React.FC<Props> = ({ onNavigate }) => {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="e.g. Please leave at Building Reception or call immediately."
-                className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
+                className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
             {/* Owner Unlock PIN */}
             <div>
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                Physical Phone Unlock PIN
+                Physical Phone Unlock PIN (Hidden from Phone Screen)
               </label>
               <div className="relative">
-                <Key className="w-4 h-4 text-cyan-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Key className="w-4 h-4 text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   maxLength={6}
@@ -228,19 +228,19 @@ export const CustomLostMessagePage: React.FC<Props> = ({ onNavigate }) => {
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   placeholder="4-6 digit numeric PIN (e.g. 1234)"
-                  className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-cyan-300 font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
+                  className="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-blue-300 font-mono font-bold placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <p className="text-[11px] text-slate-400 mt-1">
-                Enter this PIN directly on the Android phone screen to locally release Lost Mode once the device is recovered.
+                This PIN is never shown on the lost phone screen. Only the authenticated owner knows this PIN to unlock the phone once recovered.
               </p>
             </div>
 
             {/* Privacy Guarantee Note */}
             <div className="p-3 bg-slate-950/60 border border-slate-800 rounded-xl flex items-start gap-2.5 text-xs text-slate-400">
-              <ShieldAlert className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <ShieldAlert className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
               <p className="text-[11px] leading-relaxed">
-                <strong className="text-slate-200">Zero Private Exposure:</strong> Neither your SecureLock account password, email, nor full contact list will be revealed on the lost phone screen.
+                <strong className="text-slate-200">Zero Private Exposure:</strong> Neither your SecureLock account password, email, nor PIN will be revealed on the lost phone screen.
               </p>
             </div>
 
@@ -251,7 +251,7 @@ export const CustomLostMessagePage: React.FC<Props> = ({ onNavigate }) => {
                 disabled={saving}
                 className="flex-1 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all disabled:opacity-50"
               >
-                <Save className="w-4 h-4 text-cyan-400" />
+                <Save className="w-4 h-4 text-blue-400" />
                 <span>{saving ? 'Syncing...' : 'Save & Sync Message'}</span>
               </button>
 
