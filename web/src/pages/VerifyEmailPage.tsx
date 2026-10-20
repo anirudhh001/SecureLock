@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Mail, ShieldCheck, CheckCircle2, ArrowRight, RefreshCw } from 'lucide-react';
+import { Mail, ShieldCheck, ArrowRight, RefreshCw } from 'lucide-react';
 
 interface Props {
   onNavigate: (page: string) => void;
@@ -19,13 +19,17 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0B1120] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+      
+      {/* Background Subtle Ambient */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/[0.07] rounded-full blur-3xl pointer-events-none" />
+
       <div className="w-full max-w-md relative z-10">
         
-        <div className="bg-[#0b1120]/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl text-center space-y-6">
+        <div className="bg-[#151E2E] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl text-center space-y-6">
           
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 mx-auto shadow-lg shadow-cyan-950/50">
-            <Mail className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/25 text-blue-400 mx-auto shadow-sm">
+            <Mail className="w-7 h-7" />
           </div>
 
           <div className="space-y-1.5">
@@ -33,12 +37,12 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
             <p className="text-xs text-slate-400">
               A cryptographic confirmation link was dispatched to:
             </p>
-            <p className="text-sm font-semibold text-cyan-300 font-mono">
+            <p className="text-sm font-semibold text-blue-300 font-mono">
               {user?.email || 'owner@domain.com'}
             </p>
           </div>
 
-          <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-xl text-left space-y-2 text-xs text-slate-300">
+          <div className="p-4 bg-[#0B1120] border border-white/[0.06] rounded-xl text-left space-y-2 text-xs text-slate-300">
             <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
               <ShieldCheck className="w-4 h-4 shrink-0" />
               <span>Zero-Trust Owner Identification</span>
@@ -49,7 +53,7 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
 
           {statusMessage && (
-            <div className="p-3 bg-cyan-950/60 border border-cyan-800/80 rounded-xl text-xs text-cyan-200">
+            <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-xs text-blue-200">
               {statusMessage}
             </div>
           )}
@@ -57,7 +61,7 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
           <div className="space-y-3">
             <button
               onClick={() => onNavigate('dashboard')}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-950/50 transition-all flex items-center justify-center gap-2"
+              className="cyber-btn-primary w-full text-xs font-bold py-2.5 shadow-md shadow-blue-500/20"
             >
               <span>I Have Verified / Continue to Console</span>
               <ArrowRight className="w-4 h-4" />
@@ -66,7 +70,7 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
             <button
               onClick={handleResend}
               disabled={resending}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="cyber-btn-secondary w-full text-xs font-semibold py-2.5 disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin' : ''}`} />
               <span>{resending ? 'Dispatching Email...' : 'Resend Verification Email'}</span>

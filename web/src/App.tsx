@@ -30,8 +30,11 @@ const AppContent: React.FC = () => {
     return hash || 'dashboard';
   });
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const navigateTo = (page: string) => {
     setCurrentPage(page);
+    setIsMobileMenuOpen(false);
     window.location.hash = `#/${page}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -47,9 +50,9 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#070b14] flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 rounded-xl border-2 border-cyan-400 border-t-transparent animate-spin"></div>
-        <p className="text-xs font-mono text-cyan-400 tracking-wider uppercase">Loading SecureLock Defense System...</p>
+      <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center space-y-4">
+        <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
+        <p className="text-xs font-mono text-slate-400 tracking-wider uppercase">Loading SecureLock System...</p>
       </div>
     );
   }
@@ -95,16 +98,26 @@ const AppContent: React.FC = () => {
 
   return (
     <DeviceProvider>
-      <div className="min-h-screen bg-[#070b14] text-slate-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+      <div className="min-h-screen bg-[#0B1120] text-slate-100 flex flex-col font-sans selection:bg-blue-600/30 selection:text-blue-200">
         
         {/* Top Navbar */}
-        <Navbar onNavigate={navigateTo} currentPage={currentPage} />
+        <Navbar 
+          onNavigate={navigateTo} 
+          currentPage={currentPage}
+          onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          isMobileMenuOpen={isMobileMenuOpen}
+        />
 
         {/* Main Body Layout with Sidebar */}
-        <div className="flex-1 flex max-w-[1920px] w-full mx-auto">
-          <Sidebar currentPage={currentPage} onNavigate={navigateTo} />
+        <div className="flex-1 flex max-w-[1920px] w-full mx-auto relative">
+          <Sidebar 
+            currentPage={currentPage} 
+            onNavigate={navigateTo} 
+            isMobileOpen={isMobileMenuOpen}
+            onMobileClose={() => setIsMobileMenuOpen(false)}
+          />
 
-          <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
+          <main className="flex-1 p-4 lg:p-8 overflow-y-auto w-full min-w-0">
             {renderCurrentPage()}
           </main>
         </div>

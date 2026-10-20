@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
-  const { login, loginWithGoogle, loginAsDemoUser, resetPassword, isFirebaseActive } = useAuth();
+  const { login, loginWithGoogle, loginAsDemoUser, resetPassword } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,31 +58,31 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0B1120] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
       
-      {/* Background Cyber Ambient Glows */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Background Subtle Ambient Glow */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/[0.07] rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/[0.05] rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-md relative z-10 space-y-6">
         
         {/* Brand Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 shadow-xl shadow-cyan-950/60 mb-4 ring-1 ring-cyan-400/30">
-            <Shield className="w-8 h-8 text-white" />
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 shadow-lg shadow-blue-500/20 mb-3.5">
+            <Shield className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl font-black tracking-tight text-white">
-            SECURE<span className="text-cyan-400">LOCK</span>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            SECURE<span className="text-blue-400">LOCK</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1 font-medium">
-            Owner Defense & Remote Device Protection Gateway
+            Enterprise Device Defense & Lost Mode Console
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-[#0b1120]/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+        <div className="bg-[#151E2E] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-5">
           
-          <div className="mb-6">
+          <div>
             <h2 className="text-lg font-bold text-white">Owner Portal Sign In</h2>
             <p className="text-xs text-slate-400 mt-0.5">
               Enter your verified credentials to access device telemetry.
@@ -90,7 +90,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
 
           {error && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
               <span>{error}</span>
             </div>
@@ -109,7 +109,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="owner@domain.com"
-                  className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+                  className="w-full bg-[#0B1120] border border-white/[0.1] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(true)}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 font-medium"
+                  className="text-xs text-blue-400 hover:text-blue-300 font-medium"
                 >
                   Forgot Password?
                 </button>
@@ -135,7 +135,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
+                  className="w-full bg-[#0B1120] border border-white/[0.1] rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
                 <button
                   type="button"
@@ -150,21 +150,21 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-950/50 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="cyber-btn-primary w-full text-xs font-bold py-2.5 shadow-md shadow-blue-500/20 disabled:opacity-50"
             >
-              {loading ? 'Authenticating Owner...' : 'Authenticate & Enter Console'}
+              {loading ? 'Authenticating...' : 'Authenticate & Enter Console'}
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           {/* Alternative Sign-In Options */}
-          <div className="mt-6 pt-5 border-t border-slate-800 space-y-3">
+          <div className="pt-4 border-t border-white/[0.08] space-y-2.5">
             
-            {/* Quick Demo Sign-in for immediate review */}
+            {/* Quick Demo Sign-in for immediate evaluation */}
             <button
               type="button"
               onClick={handleDemoLogin}
-              className="w-full py-2.5 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-2.5 px-4 rounded-xl bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500/20 text-emerald-300 text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
             >
               <KeyRound className="w-4 h-4 text-emerald-400" />
               <span>Instant Review Login (Pre-configured Owner)</span>
@@ -174,7 +174,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium flex items-center justify-center gap-2 transition-colors"
+              className="cyber-btn-secondary w-full text-xs py-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -186,11 +186,11 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
             </button>
           </div>
 
-          <div className="mt-6 text-center text-xs text-slate-400">
+          <div className="text-center text-xs text-slate-400">
             Don't have a registered account?{' '}
             <button
               onClick={() => onNavigate('register')}
-              className="text-cyan-400 hover:underline font-semibold"
+              className="text-blue-400 hover:underline font-semibold"
             >
               Register New Owner
             </button>
@@ -199,7 +199,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         {/* Security Notice */}
-        <div className="mt-6 text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
+        <div className="text-center text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
           <span>Legitimate Android Device Admin Protocol • Never Bypasses OS Security</span>
         </div>
@@ -208,15 +208,15 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
 
       {/* Forgot Password Modal */}
       {showForgotModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#151E2E] border border-white/[0.1] rounded-2xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
             <h3 className="text-base font-bold text-white">Reset Master Password</h3>
             <p className="text-xs text-slate-400">
               Enter your registered owner email to receive a secure recovery link.
             </p>
 
             {resetMessage && (
-              <div className="p-3 bg-cyan-950/60 border border-cyan-800 rounded-xl text-xs text-cyan-200">
+              <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-xs text-blue-200">
                 {resetMessage}
               </div>
             )}
@@ -228,19 +228,19 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
                 placeholder="registered@email.com"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white"
+                className="w-full bg-[#0B1120] border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
               />
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-end gap-2 pt-1">
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(false)}
-                  className="px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-white"
+                  className="cyber-btn-secondary text-xs"
                 >
                   Close
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white"
+                  className="cyber-btn-primary text-xs font-semibold"
                 >
                   Send Reset Link
                 </button>

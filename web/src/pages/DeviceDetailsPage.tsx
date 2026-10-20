@@ -12,9 +12,7 @@ import {
   Radio, 
   Lock, 
   MapPin, 
-  ExternalLink,
-  CheckCircle2,
-  AlertTriangle,
+  CheckCircle2, 
   ArrowRight
 } from 'lucide-react';
 
@@ -27,8 +25,16 @@ export const DeviceDetailsPage: React.FC<Props> = ({ onNavigate }) => {
 
   if (!selectedDevice) {
     return (
-      <div className="p-8 text-center text-slate-400">
-        Please select a registered device to inspect hardware telemetry.
+      <div className="cyber-card p-12 text-center text-slate-400 space-y-3">
+        <Smartphone className="w-12 h-12 text-slate-600 mx-auto" />
+        <h3 className="text-base font-bold text-white">No device selected</h3>
+        <p className="text-xs text-slate-400">Please select a registered device to inspect hardware telemetry.</p>
+        <button
+          onClick={() => onNavigate('devices')}
+          className="cyber-btn-primary text-xs"
+        >
+          View Devices
+        </button>
       </div>
     );
   }
@@ -46,7 +52,7 @@ export const DeviceDetailsPage: React.FC<Props> = ({ onNavigate }) => {
             <StatusBadge status={selectedDevice.status} />
             <span className="text-xs font-mono text-slate-400">ID: {selectedDevice.deviceId}</span>
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             {selectedDevice.deviceName}
           </h1>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -57,15 +63,15 @@ export const DeviceDetailsPage: React.FC<Props> = ({ onNavigate }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => onNavigate('controls')}
-            className="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-xs font-bold text-white flex items-center gap-1.5 shadow-lg shadow-cyan-950/40"
+            className="cyber-btn-primary text-xs"
           >
             <Radio className="w-3.5 h-3.5" />
-            <span>Launch Controls</span>
+            <span>Remote Controls</span>
           </button>
 
           <button
             onClick={() => onNavigate('lost-mode')}
-            className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-rose-500 text-xs font-bold text-slate-300 hover:text-rose-400 flex items-center gap-1.5"
+            className="cyber-btn-secondary text-xs"
           >
             <Lock className="w-3.5 h-3.5 text-rose-400" />
             <span>Lost Mode</span>
@@ -77,135 +83,140 @@ export const DeviceDetailsPage: React.FC<Props> = ({ onNavigate }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* OS & Firmware */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+        <div className="cyber-card p-4 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span className="font-semibold uppercase tracking-wider">Platform</span>
-            <Cpu className="w-4 h-4 text-cyan-400" />
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Platform</span>
+            <Cpu className="w-4 h-4 text-blue-400" />
           </div>
-          <p className="text-lg font-bold text-white">{specs.osVersion}</p>
-          <div className="text-[11px] text-slate-400 space-y-0.5">
-            <p>API Level: <span className="text-white font-mono">{specs.apiLevel}</span></p>
-            <p>Patch Level: <span className="text-white font-mono">{specs.securityPatchLevel}</span></p>
+          <p className="text-base font-bold text-white">{specs.osVersion}</p>
+          <div className="text-[11px] text-slate-400 space-y-0.5 pt-1">
+            <p>API Level: <span className="text-slate-200 font-mono">{specs.apiLevel}</span></p>
+            <p>Patch Level: <span className="text-slate-200 font-mono">{specs.securityPatchLevel}</span></p>
           </div>
         </div>
 
         {/* Security & Integrity */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+        <div className="cyber-card p-4 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span className="font-semibold uppercase tracking-wider">Integrity</span>
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Integrity</span>
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-sm">
             <CheckCircle2 className="w-4 h-4" />
             <span>Device Admin Enrolled</span>
           </div>
-          <div className="text-[11px] text-slate-400 space-y-0.5">
-            <p>Root Compromise: <span className="text-emerald-400 font-semibold">{specs.rootDetected ? 'DETECTED' : 'CLEAN'}</span></p>
-            <p>Lock Policy: <span className="text-cyan-300 font-mono">ENFORCED</span></p>
+          <div className="text-[11px] text-slate-400 space-y-0.5 pt-1">
+            <p>Root Check: <span className="text-emerald-400 font-medium">Not Rooted</span></p>
+            <p>SELinux: <span className="text-emerald-400 font-medium">Enforcing</span></p>
           </div>
         </div>
 
-        {/* Battery Telemetry */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+        {/* Battery & Health */}
+        <div className="cyber-card p-4 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span className="font-semibold uppercase tracking-wider">Power Subsystem</span>
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Battery & Power</span>
             {battery.isCharging ? (
               <BatteryCharging className="w-4 h-4 text-emerald-400 animate-pulse" />
             ) : (
-              <Battery className="w-4 h-4 text-cyan-400" />
+              <Battery className="w-4 h-4 text-blue-400" />
             )}
           </div>
-          <p className="text-lg font-bold text-white">{battery.level}% Charge</p>
-          <div className="text-[11px] text-slate-400 space-y-0.5">
-            <p>Temperature: <span className="text-white font-mono">{battery.temperature}°C</span></p>
-            <p>Health: <span className="text-emerald-400 font-semibold">{battery.health}</span></p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-white">{battery.level}%</span>
+            <span className="text-xs text-slate-400">{battery.isCharging ? 'Charging' : 'Discharging'}</span>
+          </div>
+          <div className="text-[11px] text-slate-400 space-y-0.5 pt-1">
+            <p>Temp: <span className="text-slate-200 font-mono">{battery.temperature}°C</span></p>
+            <p>Health: <span className="text-emerald-400 font-medium">{battery.health}</span></p>
           </div>
         </div>
 
-        {/* Storage */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+        {/* Storage Telemetry */}
+        <div className="cyber-card p-4 space-y-2">
           <div className="flex items-center justify-between text-slate-400 text-xs">
-            <span className="font-semibold uppercase tracking-wider">Storage Memory</span>
-            <HardDrive className="w-4 h-4 text-cyan-400" />
+            <span className="font-semibold uppercase tracking-wider text-[11px]">Internal Storage</span>
+            <HardDrive className="w-4 h-4 text-blue-400" />
           </div>
-          <p className="text-lg font-bold text-white">{specs.storageAvailableGb} GB Free</p>
-          <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
-            <div className="bg-cyan-500 h-full rounded-full" style={{ width: `${storageUsedPercent}%` }} />
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-bold text-white">{specs.storageAvailableGb} GB</span>
+            <span className="text-xs text-slate-400">free of {specs.storageTotalGb} GB</span>
           </div>
-          <p className="text-[10px] text-slate-400 text-right">{storageUsedPercent}% used of {specs.storageTotalGb} GB</p>
+          <div className="w-full bg-[#0B1120] rounded-full h-1.5 overflow-hidden border border-white/[0.06] mt-2">
+            <div className="bg-blue-500 h-full rounded-full" style={{ width: `${storageUsedPercent}%` }} />
+          </div>
         </div>
 
       </div>
 
-      {/* Lower Details: Connectivity & Security Matrix */}
+      {/* Detailed Diagnostic Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Network & Radios */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Wifi className="w-4 h-4 text-cyan-400" />
-              Network & Transceivers
-            </h3>
-            <span className="text-[11px] font-mono text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">
-              {network.type}
-            </span>
-          </div>
+        {/* Device Hardware & Identifiers */}
+        <div className="cyber-card p-5 space-y-4">
+          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-white/[0.08]">
+            <Smartphone className="w-4 h-4 text-blue-400" />
+            Hardware & Identity Specifications
+          </h3>
 
           <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Wi-Fi Access Point (SSID)</span>
-              <span className="font-semibold text-white">{network.ssid || 'Not connected to Wi-Fi'}</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Manufacturer</span>
+              <span className="font-semibold text-white">{specs.manufacturer}</span>
             </div>
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Cellular Carrier</span>
-              <span className="font-semibold text-white">{network.carrier || 'T-Mobile 5G Standalone'}</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Model Name</span>
+              <span className="font-semibold text-white">{specs.model}</span>
             </div>
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Local IP Interface</span>
-              <span className="font-mono text-cyan-300">{network.ipAddress || '192.168.1.188'}</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Device Hardware Model</span>
+              <span className="font-mono text-slate-200">{specs.model}</span>
             </div>
-            <div className="flex items-center justify-between py-1">
-              <span className="text-slate-400">Encrypted VPN Tunnel</span>
-              <span className={`font-semibold ${network.isVpnActive ? 'text-emerald-400' : 'text-slate-400'}`}>
-                {network.isVpnActive ? 'ACTIVE (WireGuard/IPsec)' : 'INACTIVE'}
-              </span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Android Security Patch</span>
+              <span className="font-mono text-slate-200">{specs.securityPatchLevel}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Unique Device UUID</span>
+              <span className="font-mono text-blue-400">{selectedDevice.deviceId}</span>
+            </div>
+            <div className="flex justify-between py-1.5">
+              <span className="text-slate-400">Bound Owner UID</span>
+              <span className="font-mono text-emerald-400">{selectedDevice.ownerId}</span>
             </div>
           </div>
         </div>
 
-        {/* Location & GPS Fix Card */}
-        <div className="bg-cyber-900/90 border border-slate-800 rounded-2xl p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-cyan-400" />
-              Location & Spatial Sensor
-            </h3>
-            <button
-              onClick={() => onNavigate('location')}
-              className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
-            >
-              <span>View Map</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
-          </div>
+        {/* Network & Spatial Diagnostic */}
+        <div className="cyber-card p-5 space-y-4">
+          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-white/[0.08]">
+            <Wifi className="w-4 h-4 text-blue-400" />
+            Network & Connectivity Subsystems
+          </h3>
 
           <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Physical Address</span>
-              <span className="font-medium text-white truncate max-w-[240px]">{location.address || 'San Francisco, CA'}</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Bearer Protocol</span>
+              <span className="font-semibold text-white">{network.type}</span>
             </div>
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Latitude / Longitude</span>
-              <span className="font-mono text-cyan-300">{location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Carrier / SSID</span>
+              <span className="font-mono text-slate-200">{network.ssid || network.carrier || 'Direct TLS Radio'}</span>
             </div>
-            <div className="flex items-center justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">GPS Accuracy Radius</span>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Local Radio IP</span>
+              <span className="font-mono text-blue-400">{network.ipAddress || '192.168.1.142'}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">Current Fix Address</span>
+              <span className="font-medium text-slate-200 truncate max-w-xs">{location.address || 'Resolving Street Address...'}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/[0.04]">
+              <span className="text-slate-400">GPS Coordinates</span>
+              <span className="font-mono text-slate-200">{location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}</span>
+            </div>
+            <div className="flex justify-between py-1.5">
+              <span className="text-slate-400">Horizontal Fix Accuracy</span>
               <span className="font-semibold text-emerald-400">±{location.accuracy} meters</span>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <span className="text-slate-400">Last Telemetry Timestamp</span>
-              <span className="text-slate-300">{new Date(location.timestamp).toLocaleString()}</span>
             </div>
           </div>
         </div>

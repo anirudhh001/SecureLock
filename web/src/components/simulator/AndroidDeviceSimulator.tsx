@@ -6,7 +6,6 @@ import {
   Wifi, 
   Battery, 
   BatteryCharging, 
-  ShieldCheck, 
   ShieldAlert, 
   Volume2, 
   VolumeX, 
@@ -17,13 +16,10 @@ import {
   X, 
   CheckCircle2, 
   AlertTriangle,
-  Radio,
   Sliders,
   LogIn,
   UserPlus,
-  ArrowRight,
-  Shield,
-  Lock
+  Shield
 } from 'lucide-react';
 
 export const AndroidDeviceSimulator: React.FC = () => {
@@ -95,37 +91,37 @@ export const AndroidDeviceSimulator: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Phone Mockup Frame */}
-      <div className="w-[320px] bg-slate-900 border-4 border-slate-700/80 rounded-[42px] shadow-2xl overflow-hidden relative transition-all duration-300 ring-1 ring-cyan-500/20">
+      <div className="w-[320px] bg-[#070B14] border-4 border-slate-700 rounded-[42px] shadow-2xl overflow-hidden relative transition-all duration-300 ring-1 ring-blue-500/20">
         
         {/* Physical Camera Notch */}
-        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-950 rounded-full z-40 flex items-center justify-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
+        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-900 rounded-full z-40 flex items-center justify-center">
+          <div className="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700" />
         </div>
 
         {/* Top Control Bar (Web Simulator Header) */}
-        <div className="bg-slate-950 px-4 pt-2 pb-1.5 flex items-center justify-between border-b border-slate-800/60 text-[10px] text-slate-400">
-          <div className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-            <span className="font-semibold text-cyan-300 tracking-wider">ANDROID COMPANION SIM</span>
-          </div>
+        <div className="bg-[#0B1120] px-4 pt-2.5 pb-1.5 flex items-center justify-between border-b border-white/[0.08] text-[10px] text-slate-400">
           <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+            <span className="font-semibold text-slate-200 tracking-wider">ANDROID COMPANION</span>
+          </div>
+          <div className="flex items-center gap-1">
             <button 
               onClick={() => setCompanionMode(companionMode === 'login' ? 'normal' : 'login')}
-              className={`p-1 rounded transition-colors ${companionMode === 'login' ? 'bg-cyan-600 text-white' : 'hover:bg-slate-800 text-slate-300 hover:text-white'}`}
-              title={companionMode === 'login' ? 'Return to Home' : 'Link Another Phone / Login with Original ID'}
+              className={`p-1 rounded-md transition-colors ${companionMode === 'login' ? 'bg-blue-600 text-white' : 'hover:bg-white/[0.06] text-slate-400 hover:text-white'}`}
+              title={companionMode === 'login' ? 'Return to Home' : 'Link Another Phone'}
             >
               <LogIn className="w-3.5 h-3.5" />
             </button>
             <button 
               onClick={() => setShowControlsDrawer(!showControlsDrawer)}
-              className="p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-white"
+              className="p-1 rounded-md hover:bg-white/[0.06] text-slate-400 hover:text-white transition-colors"
               title="Simulator Sensor Controls"
             >
               <Sliders className="w-3.5 h-3.5" />
             </button>
             <button 
               onClick={toggleSimulator}
-              className="p-1 rounded hover:bg-slate-800 text-slate-300 hover:text-rose-400"
+              className="p-1 rounded-md hover:bg-white/[0.06] text-slate-400 hover:text-rose-400 transition-colors"
               title="Close Simulator"
             >
               <X className="w-3.5 h-3.5" />
@@ -135,19 +131,19 @@ export const AndroidDeviceSimulator: React.FC = () => {
 
         {/* Simulator Hardware Sensors Drawer */}
         {showControlsDrawer && (
-          <div className="bg-slate-950/95 border-b border-slate-800 p-3 text-xs space-y-2 z-30">
+          <div className="bg-[#151E2E] border-b border-white/[0.08] p-3 text-xs space-y-2 z-30">
             <div className="flex items-center justify-between text-slate-300 font-semibold text-[11px]">
               <span>Hardware Sensor Injections</span>
-              <span className="text-[10px] text-cyan-400">Owner Testing</span>
+              <span className="text-[10px] text-blue-400">Owner Testing</span>
             </div>
             
             <div className="grid grid-cols-2 gap-1.5">
               <button
                 onClick={simulatorToggleAirplaneMode}
-                className={`px-2 py-1.5 rounded text-[10px] font-medium border flex items-center justify-center gap-1 ${
+                className={`px-2 py-1.5 rounded-lg text-[10px] font-medium border flex items-center justify-center gap-1 ${
                   isAirplane 
                     ? 'bg-amber-500/20 border-amber-500/40 text-amber-300' 
-                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                    : 'bg-[#1A2537] border-white/[0.08] text-slate-300 hover:bg-[#223046]'
                 }`}
               >
                 <Plane className="w-3 h-3" />
@@ -156,7 +152,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
 
               <button
                 onClick={simulatorTriggerSimRemoval}
-                className="px-2 py-1.5 rounded text-[10px] font-medium bg-rose-500/15 border border-rose-500/40 text-rose-300 hover:bg-rose-500/25 flex items-center justify-center gap-1"
+                className="px-2 py-1.5 rounded-lg text-[10px] font-medium bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-500/25 flex items-center justify-center gap-1"
               >
                 <Cpu className="w-3 h-3" />
                 Simulate SIM Eject
@@ -168,19 +164,19 @@ export const AndroidDeviceSimulator: React.FC = () => {
               <div className="flex gap-1">
                 <button
                   onClick={() => simulatorUpdateBattery(12, false)}
-                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                  className="px-1.5 py-0.5 rounded bg-[#1A2537] hover:bg-[#223046] text-slate-300"
                 >
                   Low (12%)
                 </button>
                 <button
                   onClick={() => simulatorUpdateBattery(85, false)}
-                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                  className="px-1.5 py-0.5 rounded bg-[#1A2537] hover:bg-[#223046] text-slate-300"
                 >
                   85%
                 </button>
                 <button
                   onClick={() => simulatorUpdateBattery(100, true)}
-                  className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400"
+                  className="px-1.5 py-0.5 rounded bg-[#1A2537] hover:bg-[#223046] text-emerald-400"
                 >
                   Charging
                 </button>
@@ -194,8 +190,8 @@ export const AndroidDeviceSimulator: React.FC = () => {
           selectedDevice.alarmActive 
             ? 'bg-gradient-to-b from-rose-950 via-red-900 to-black animate-pulse' 
             : selectedDevice.lostMode 
-              ? 'bg-gradient-to-b from-slate-950 via-red-950/40 to-slate-950' 
-              : 'bg-gradient-to-b from-[#0a0f1d] to-[#040711]'
+              ? 'bg-gradient-to-b from-[#0B1120] via-rose-950/40 to-[#0B1120]' 
+              : 'bg-gradient-to-b from-[#0B1120] to-[#070B14]'
         }`}>
 
           {/* Android System Status Bar */}
@@ -207,7 +203,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
               ) : selectedDevice.network.type === 'WIFI' ? (
                 <Wifi className="w-3.5 h-3.5 text-emerald-400" />
               ) : (
-                <span className="text-[10px] font-bold text-cyan-400">5G</span>
+                <span className="text-[10px] font-bold text-blue-400">5G</span>
               )}
 
               <div className="flex items-center gap-1">
@@ -256,7 +252,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                   <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-400 mb-1">
                     <ShieldAlert className="w-6 h-6 animate-pulse" />
                   </div>
-                  <h3 className="text-base font-black tracking-wide text-rose-400 uppercase">
+                  <h3 className="text-base font-bold tracking-wide text-rose-400 uppercase">
                     DEVICE IN LOST MODE
                   </h3>
                   <div className="inline-block px-2 py-0.5 rounded bg-rose-950/80 border border-rose-500/30 text-[10px] text-rose-300">
@@ -265,16 +261,16 @@ export const AndroidDeviceSimulator: React.FC = () => {
                 </div>
 
                 {/* Custom Owner Recovery Message Card */}
-                <div className="bg-slate-900/90 border border-rose-500/40 rounded-xl p-3.5 space-y-2 shadow-lg">
+                <div className="bg-[#151E2E] border border-rose-500/40 rounded-xl p-3.5 space-y-2 shadow-lg">
                   <div className="text-[10px] font-semibold text-rose-400 uppercase tracking-wider flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
                     Message from Owner
                   </div>
                   <p className="text-xs text-slate-100 font-medium leading-relaxed">
-                    "{selectedDevice.lostModeMessage || 'This phone has been lost. Please return to owner.'}"
+                    "{selectedDevice.lostModeMessage || 'This device has been reported as lost. Please contact the owner.'}"
                   </p>
                   {selectedDevice.recoveryNotes && (
-                    <p className="text-[11px] text-slate-400 italic border-t border-slate-800 pt-1.5">
+                    <p className="text-[11px] text-slate-400 italic border-t border-white/[0.06] pt-1.5">
                       {selectedDevice.recoveryNotes}
                     </p>
                   )}
@@ -298,7 +294,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
               </div>
 
               {/* Local PIN Unlock Form for testing */}
-              <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-2.5 mt-2">
+              <div className="bg-[#151E2E] border border-white/[0.08] rounded-xl p-2.5 mt-2">
                 <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1.5">
                   <span className="flex items-center gap-1">
                     <Key className="w-3 h-3 text-blue-400" />
@@ -313,15 +309,15 @@ export const AndroidDeviceSimulator: React.FC = () => {
                     value={enteredPin}
                     onChange={(e) => setEnteredPin(e.target.value)}
                     placeholder="Enter Owner PIN"
-                    className={`flex-1 bg-slate-900 border rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 ${
+                    className={`flex-1 bg-[#0B1120] border rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 ${
                       pinError 
-                        ? 'border-rose-500 focus:ring-rose-500 animate-shake' 
-                        : 'border-slate-700 focus:ring-blue-500'
+                        ? 'border-rose-500 focus:ring-rose-500' 
+                        : 'border-white/[0.1] focus:ring-blue-500'
                     }`}
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold"
+                    className="cyber-btn-primary px-3 py-1 text-xs"
                   >
                     Unlock
                   </button>
@@ -336,12 +332,12 @@ export const AndroidDeviceSimulator: React.FC = () => {
             </div>
           ) : companionMode === 'login' ? (
 
-            /* SCREEN CONTENT: 3. ORIGINAL OWNER ACCOUNT LOGIN (FOR ENROLLING ANOTHER PHONE) */
+            /* SCREEN CONTENT: 3. ORIGINAL OWNER ACCOUNT LOGIN */
             <div className="px-5 py-3 flex-1 flex flex-col justify-between overflow-y-auto">
               <div className="space-y-3 pt-1">
                 
                 <div className="text-center space-y-1">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mx-auto">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mx-auto">
                     <Shield className="w-5 h-5" />
                   </div>
                   <h4 className="text-xs font-bold text-white uppercase tracking-wider">
@@ -370,7 +366,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                       value={enrollEmail}
                       onChange={(e) => setEnrollEmail(e.target.value)}
                       placeholder="owner@domain.com"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                      className="w-full bg-[#151E2E] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-white"
                     />
                   </div>
 
@@ -384,7 +380,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                       value={enrollPassword}
                       onChange={(e) => setEnrollPassword(e.target.value)}
                       placeholder="••••••••••••"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                      className="w-full bg-[#151E2E] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-white"
                     />
                   </div>
 
@@ -398,7 +394,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                       value={enrollDeviceName}
                       onChange={(e) => setEnrollDeviceName(e.target.value)}
                       placeholder="e.g. Pixel 8 / Galaxy S24"
-                      className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                      className="w-full bg-[#151E2E] border border-white/[0.1] rounded-lg px-2.5 py-1.5 text-xs text-white"
                     />
                   </div>
 
@@ -406,10 +402,10 @@ export const AndroidDeviceSimulator: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isSubmittingEnroll}
-                      className="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg text-xs font-bold shadow-lg flex items-center justify-center gap-1.5 disabled:opacity-50"
+                      className="cyber-btn-primary w-full text-xs font-bold py-2 shadow-md disabled:opacity-50"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
-                      <span>{isSubmittingEnroll ? 'Authenticating Owner...' : 'Authenticate & Link Device'}</span>
+                      <span>{isSubmittingEnroll ? 'Authenticating...' : 'Authenticate & Link Device'}</span>
                     </button>
 
                     <button
@@ -424,8 +420,8 @@ export const AndroidDeviceSimulator: React.FC = () => {
 
               </div>
 
-              <div className="p-2 bg-slate-950/80 border border-slate-800 rounded-lg text-[9px] text-slate-400 text-center">
-                Owner UID: <span className="text-cyan-400 font-mono">{user?.uid || 'usr-cyber-owner-01'}</span>
+              <div className="p-2 bg-[#0B1120] border border-white/[0.08] rounded-lg text-[9px] text-slate-400 text-center">
+                Owner UID: <span className="text-blue-400 font-mono">{user?.uid || 'usr-cyber-owner-01'}</span>
               </div>
             </div>
           ) : (
@@ -435,31 +431,31 @@ export const AndroidDeviceSimulator: React.FC = () => {
               <div className="space-y-3 pt-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-400">
                       <Smartphone className="w-4 h-4" />
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-white leading-none">SecureLock Agent</h4>
                       <p className="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-ping"></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
                         Active & Guarded
                       </p>
                     </div>
                   </div>
-                  <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700 font-mono">
+                  <span className="text-[9px] bg-white/[0.06] text-slate-300 px-2 py-0.5 rounded border border-white/[0.06] font-mono">
                     v2.4-arm64
                   </span>
                 </div>
 
                 {/* Device Status & Bound Owner Identity Card */}
-                <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 space-y-1.5 text-xs">
+                <div className="bg-[#151E2E] border border-white/[0.08] rounded-xl p-3 space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400 text-[10px]">Controlled Target:</span>
                     <span className="font-semibold text-slate-200">{selectedDevice.deviceName.split(' ')[0]}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400 text-[10px]">Bound Owner:</span>
-                    <span className="font-mono text-[10px] text-cyan-300 truncate max-w-[150px]">
+                    <span className="font-mono text-[10px] text-blue-300 truncate max-w-[150px]">
                       {user?.email || 'cyber.admin@securelock.io'}
                     </span>
                   </div>
@@ -469,7 +465,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                       <CheckCircle2 className="w-3 h-3" /> ENABLED (lockNow)
                     </span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-slate-800/80 pt-1 text-[10px]">
+                  <div className="flex items-center justify-between border-t border-white/[0.06] pt-1 text-[10px]">
                     <span className="text-slate-400">Deactivation PIN:</span>
                     <span className="font-mono text-slate-400">•••• (Protected in Console)</span>
                   </div>
@@ -479,7 +475,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
                 <div className="space-y-1.5 pt-1">
                   <button
                     onClick={() => setCompanionMode('login')}
-                    className="w-full py-2 px-3 rounded-lg bg-blue-600/15 border border-blue-500/30 hover:bg-blue-600/25 text-blue-200 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                    className="cyber-btn-secondary w-full text-[11px] py-1.5"
                   >
                     <UserPlus className="w-3.5 h-3.5 text-blue-400" />
                     <span>Pair Another Device via Original ID</span>
@@ -487,7 +483,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
 
                   <button
                     onClick={testUnauthorizedAttackAttempt}
-                    className="w-full py-2 px-3 rounded-lg bg-rose-500/10 border border-rose-500/30 hover:bg-rose-500/20 text-rose-300 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                    className="cyber-btn-danger w-full text-[11px] py-1.5"
                     title="Simulate an attacker trying to control this phone with a rogue account ID"
                   >
                     <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
@@ -497,7 +493,7 @@ export const AndroidDeviceSimulator: React.FC = () => {
               </div>
 
               {/* Bottom Navigation Simulator Pill */}
-              <div className="py-1.5 text-center border-t border-slate-800/50">
+              <div className="py-1.5 text-center border-t border-white/[0.06]">
                 <span className="text-[9px] text-slate-400 font-mono">
                   Hardware UUID: {selectedDevice.deviceId}
                 </span>
@@ -506,10 +502,10 @@ export const AndroidDeviceSimulator: React.FC = () => {
           )}
 
           {/* Android Bottom Soft Navigation Bar */}
-          <div className="h-6 bg-slate-950 flex items-center justify-center gap-8 text-slate-600">
-            <span className="w-3 h-3 rounded-full border border-slate-700"></span>
-            <span className="w-8 h-1 rounded-full bg-slate-700"></span>
-            <span className="w-2.5 h-2.5 rotate-45 border-l border-b border-slate-700"></span>
+          <div className="h-6 bg-[#070B14] flex items-center justify-center gap-8 text-slate-600">
+            <span className="w-3 h-3 rounded-full border border-slate-700" />
+            <span className="w-8 h-1 rounded-full bg-slate-700" />
+            <span className="w-2.5 h-2.5 rotate-45 border-l border-b border-slate-700" />
           </div>
 
         </div>
@@ -517,11 +513,11 @@ export const AndroidDeviceSimulator: React.FC = () => {
       </div>
 
       {/* Floating Indicator when Simulator is Open */}
-      <div className="mt-2 text-[11px] text-slate-400 bg-slate-900/90 px-3 py-1 rounded-full border border-slate-800 flex items-center gap-1.5 shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <div className="mt-2 text-[11px] text-slate-400 bg-[#151E2E] px-3 py-1 rounded-full border border-white/[0.08] flex items-center gap-1.5 shadow-lg">
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <span>
           Controlled Phone: <strong className="text-white">{selectedDevice.deviceName.split(' ')[0]}</strong>
-          {' '}(Owner: <strong className="text-cyan-300">{user?.email?.split('@')[0] || 'owner'}</strong>)
+          {' '}(Owner: <strong className="text-blue-400">{user?.email?.split('@')[0] || 'owner'}</strong>)
         </span>
       </div>
     </div>
