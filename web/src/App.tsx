@@ -57,15 +57,15 @@ const AppContent: React.FC = () => {
     );
   }
 
-  // Unauthenticated Routes
-  if (!user) {
-    if (currentPage === 'register') {
-      return <RegisterPage onNavigate={navigateTo} />;
-    }
-    if (currentPage === 'verify-email') {
-      return <VerifyEmailPage onNavigate={navigateTo} />;
-    }
+  // Auth Route Pages (only shown when explicitly visited e.g. #/login, #/register)
+  if (currentPage === 'login') {
     return <LoginPage onNavigate={navigateTo} />;
+  }
+  if (currentPage === 'register') {
+    return <RegisterPage onNavigate={navigateTo} />;
+  }
+  if (currentPage === 'verify-email') {
+    return <VerifyEmailPage onNavigate={navigateTo} />;
   }
 
   // Authenticated Routes

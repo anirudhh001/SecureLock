@@ -58,16 +58,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             isDemoUser: false,
           });
         } else {
-          // If no Firebase user, check if demo user was saved
+          // If no Firebase user, default to demo owner so the site is 100% public for visitors without a login screen
           const stored = localStorage.getItem(LOCAL_STORAGE_AUTH_KEY);
           if (stored) {
             try {
               setUser(JSON.parse(stored));
             } catch (e) {
-              setUser(null);
+              setUser(DEMO_USER);
             }
           } else {
-            setUser(null);
+            setUser(DEMO_USER);
           }
         }
         setLoading(false);
@@ -205,7 +205,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await firebaseSignOut(auth);
     }
     localStorage.removeItem(LOCAL_STORAGE_AUTH_KEY);
-    setUser(null);
+    setUser(DEMO_USER);
   };
 
   const resetPassword = async (email: string) => {
