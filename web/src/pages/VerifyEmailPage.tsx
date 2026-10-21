@@ -19,61 +19,58 @@ export const VerifyEmailPage: React.FC<Props> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1120] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F7F8FA] dark:bg-[#0A0F1C] text-[#111827] dark:text-[#F9FAFB] flex flex-col justify-center items-center px-4 py-12 relative transition-colors duration-200">
       
-      {/* Background Subtle Ambient */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/[0.07] rounded-full blur-3xl pointer-events-none" />
-
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-sm">
         
-        <div className="bg-[#151E2E] border border-white/[0.08] rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl text-center space-y-6">
+        <div className="bg-white dark:bg-[#141D2E] border border-slate-200 dark:border-white/[0.08] rounded-xl p-6 sm:p-7 shadow-xs text-center space-y-5">
           
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/25 text-blue-400 mx-auto shadow-sm">
-            <Mail className="w-7 h-7" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 mx-auto">
+            <Mail className="w-6 h-6" />
           </div>
 
-          <div className="space-y-1.5">
-            <h2 className="text-xl font-bold text-white">Verify Your Owner Email</h2>
-            <p className="text-xs text-slate-400">
-              A cryptographic confirmation link was dispatched to:
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Verify Your Owner Email</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              A verification link was dispatched to:
             </p>
-            <p className="text-sm font-semibold text-blue-300 font-mono">
+            <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 font-mono">
               {user?.email || 'owner@domain.com'}
             </p>
           </div>
 
-          <div className="p-4 bg-[#0B1120] border border-white/[0.06] rounded-xl text-left space-y-2 text-xs text-slate-300">
-            <div className="flex items-center gap-2 text-emerald-400 font-semibold text-xs">
+          <div className="p-3.5 bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] rounded-lg text-left space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
               <ShieldCheck className="w-4 h-4 shrink-0" />
-              <span>Zero-Trust Owner Identification</span>
+              <span>Identity Verification</span>
             </div>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Email verification prevents unauthorized device linking and ensures only the verified owner can initiate Lost Mode overrides and siren broadcasts.
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              Email verification ensures that only the verified owner can initiate Lost Mode overrides and alarm broadcasts.
             </p>
           </div>
 
           {statusMessage && (
-            <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-xs text-blue-200">
+            <div className="p-2.5 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 rounded-lg text-xs">
               {statusMessage}
             </div>
           )}
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <button
               onClick={() => onNavigate('dashboard')}
-              className="cyber-btn-primary w-full text-xs font-bold py-2.5 shadow-md shadow-blue-500/20"
+              className="cyber-btn-primary w-full text-xs py-2 flex items-center justify-center gap-1.5"
             >
-              <span>I Have Verified / Continue to Console</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Continue to Dashboard</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={handleResend}
               disabled={resending}
-              className="cyber-btn-secondary w-full text-xs font-semibold py-2.5 disabled:opacity-50"
+              className="cyber-btn-secondary w-full text-xs py-2 flex items-center justify-center gap-1.5"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${resending ? 'animate-spin' : ''}`} />
-              <span>{resending ? 'Dispatching Email...' : 'Resend Verification Email'}</span>
+              <span>{resending ? 'Sending...' : 'Resend Email'}</span>
             </button>
           </div>
 

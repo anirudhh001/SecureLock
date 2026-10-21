@@ -8,11 +8,12 @@ import {
   ShieldAlert, 
   History, 
   Settings,
-  ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  Info,
-  MessageSquareWarning
+  Shield,
+  MessageSquareWarning,
+  SlidersHorizontal,
+  CheckCircle2
 } from 'lucide-react';
 import { useDevices } from '../../context/DeviceContext';
 
@@ -34,8 +35,7 @@ export const Sidebar: React.FC<Props> = ({
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'devices', label: 'My Devices', icon: Smartphone },
-    { id: 'device-details', label: 'Device Details', icon: Info },
+    { id: 'devices', label: 'Devices', icon: Smartphone },
     { id: 'location', label: 'Location', icon: MapPin },
     { id: 'controls', label: 'Remote Control', icon: Radio },
     { 
@@ -66,138 +66,106 @@ export const Sidebar: React.FC<Props> = ({
       {isMobileOpen && (
         <div 
           onClick={onMobileClose}
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden transition-opacity duration-200"
         />
       )}
 
       {/* Sidebar Container */}
       <aside className={`
-        fixed lg:sticky top-0 lg:top-[65px] left-0 z-50 lg:z-30
-        h-full lg:h-[calc(100vh-65px)]
-        bg-[#0B1120] border-r border-white/[0.08]
+        fixed lg:sticky top-0 lg:top-[57px] left-0 z-50 lg:z-30
+        h-full lg:h-[calc(100vh-57px)]
+        bg-white dark:bg-[#0A0F1C] border-r border-slate-200 dark:border-white/[0.08]
         flex flex-col justify-between shrink-0
-        transition-all duration-300 ease-in-out
+        transition-all duration-200 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        ${isCollapsed ? 'lg:w-[76px]' : 'lg:w-64'}
-        w-64
+        ${isCollapsed ? 'lg:w-[68px]' : 'lg:w-60'}
+        w-60
       `}>
-        {/* Top: Header/Controls & Nav list */}
-        <div className="p-3.5 space-y-4 overflow-y-auto">
+        {/* Navigation list */}
+        <div className="p-3 space-y-1 overflow-y-auto">
           
           {/* Collapse Toggle for Desktop */}
-          <div className="hidden lg:flex items-center justify-between pb-2 border-b border-white/[0.06]">
+          <div className="hidden lg:flex items-center justify-between pb-2 mb-1 border-b border-slate-100 dark:border-white/[0.06]">
             {!isCollapsed && (
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2">
-                Navigation
+              <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-wider px-2">
+                Menu
               </span>
             )}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors ml-auto"
+              className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors ml-auto"
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
             </button>
           </div>
 
-          {/* Active Device Quick Status (Only when expanded) */}
-          {!isCollapsed && selectedDevice && (
-            <div className="bg-[#151E2E] border border-white/[0.08] rounded-xl p-3 text-xs shadow-sm">
-              <div className="flex items-center justify-between text-[10px] uppercase font-semibold text-slate-400">
-                <span>Active Target</span>
-                <span className={`flex items-center gap-1.5 ${
-                  selectedDevice.status === 'online' 
-                    ? 'text-emerald-400' 
-                    : selectedDevice.status === 'lost' 
-                    ? 'text-rose-400' 
-                    : 'text-slate-500'
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${
-                    selectedDevice.status === 'online' ? 'bg-emerald-400 animate-pulse' : selectedDevice.status === 'lost' ? 'bg-rose-400 animate-ping' : 'bg-slate-500'
-                  }`} />
-                  {selectedDevice.status}
-                </span>
-              </div>
-              <p className="font-semibold text-white text-xs truncate mt-1">{selectedDevice.deviceName}</p>
-              <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-white/[0.06]">
-                <span>Bat: {selectedDevice.battery.level}%</span>
-                <span>{selectedDevice.network.type}</span>
-              </div>
-            </div>
-          )}
-
           {/* Navigation Links */}
-          <nav className="space-y-1">
+          <nav className="space-y-0.5" aria-label="Main Navigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPage === item.id;
-
+              
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNav(item.id)}
                   title={isCollapsed ? item.label : undefined}
                   className={`
-                    w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative group
-                    ${isActive
-                      ? 'bg-blue-600/10 text-white font-semibold'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                    w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium
+                    transition-all duration-150 group relative
+                    ${isActive 
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-600/15 dark:text-blue-300' 
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-white/[0.04]'
                     }
+                    ${isCollapsed ? 'justify-center px-2' : ''}
                   `}
                 >
                   {/* Active Indicator Bar */}
                   {isActive && (
-                    <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-blue-500 rounded-r-full" />
+                    <span className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-blue-600 rounded-r" />
                   )}
 
-                  <div className={`flex items-center gap-3 ${isCollapsed ? 'mx-auto' : ''}`}>
-                    <Icon className={`w-4 h-4 shrink-0 transition-colors ${
-                      isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'
-                    }`} />
-                    {!isCollapsed && <span>{item.label}</span>}
-                  </div>
-
+                  <Icon className={`w-4 h-4 shrink-0 transition-colors ${
+                    isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300'
+                  }`} />
+                  
                   {!isCollapsed && (
-                    <div className="flex items-center gap-1.5">
-                      {item.alert && (
-                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                      )}
-                      {item.badge && item.badge > 0 && (
-                        <span className="px-1.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-[10px] font-bold">
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
+                    <span className="truncate flex-1 text-left">{item.label}</span>
+                  )}
+
+                  {/* Lost Mode Indicator */}
+                  {!isCollapsed && item.alert && (
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+                  )}
+
+                  {/* Badge */}
+                  {!isCollapsed && item.badge && item.badge > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-semibold bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
+                      {item.badge}
+                    </span>
                   )}
                 </button>
               );
             })}
           </nav>
-
         </div>
 
-        {/* Bottom Status Indicator */}
-        <div className="p-3 border-t border-white/[0.08] space-y-2">
-          {!isCollapsed ? (
-            <div className="bg-[#151E2E] border border-white/[0.08] rounded-xl p-3 text-xs space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-200 flex items-center gap-1.5 text-xs">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
-                  System Secure
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400/90 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                  ARMED
-                </span>
+        {/* Bottom Section: System Protected Status */}
+        <div className="p-3 border-t border-slate-100 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02]">
+          <div className={`flex items-center gap-2.5 px-2 py-1.5 ${isCollapsed ? 'justify-center px-0' : ''}`}>
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            {!isCollapsed && (
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">System Protected</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Zero Threats Active</p>
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
-                Device Admin API monitoring active.
-              </p>
-            </div>
-          ) : (
-            <div className="flex justify-center py-2" title="System Secure">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
       </aside>

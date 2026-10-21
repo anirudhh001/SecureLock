@@ -12,8 +12,7 @@ import {
   CheckCircle2,
   AlertOctagon,
   Radio,
-  Clock,
-  Sparkles
+  Clock
 } from 'lucide-react';
 import type { EventSeverity } from '../types/event';
 
@@ -41,9 +40,9 @@ export const SecurityCenterPage: React.FC<Props> = ({ onNavigate }) => {
 
   // Determine overall threat level
   const getThreatLevel = (): { level: 'LOW' | 'MEDIUM' | 'HIGH'; badge: string; color: string } => {
-    if (counts.CRITICAL > 0) return { level: 'HIGH', badge: '🔴 HIGH', color: 'text-rose-400' };
-    if (counts.HIGH > 0 || counts.MEDIUM > 2) return { level: 'MEDIUM', badge: '🟡 MEDIUM', color: 'text-amber-400' };
-    return { level: 'LOW', badge: '🟢 LOW', color: 'text-emerald-400' };
+    if (counts.CRITICAL > 0) return { level: 'HIGH', badge: '🔴 HIGH', color: 'text-rose-600 dark:text-rose-400' };
+    if (counts.HIGH > 0 || counts.MEDIUM > 2) return { level: 'MEDIUM', badge: '🟡 MEDIUM', color: 'text-amber-600 dark:text-amber-400' };
+    return { level: 'LOW', badge: '🟢 LOW', color: 'text-emerald-600 dark:text-emerald-400' };
   };
 
   const threat = getThreatLevel();
@@ -61,272 +60,147 @@ export const SecurityCenterPage: React.FC<Props> = ({ onNavigate }) => {
     return true;
   });
 
-  // Simulated Alert Injections for Testing
-  const simulateSimChangeAlert = () => {
-    if (!selectedDevice) return;
-    addSecurityEvent({
-      deviceId: selectedDevice.deviceId,
-      deviceName: selectedDevice.deviceName,
-      ownerId: selectedDevice.ownerId,
-      eventType: 'SIM_STATE_CHANGED',
-      severity: 'HIGH',
-      description: `Suspicious SIM card change detected on ${selectedDevice.deviceName}. Telephony state altered to ABSENT.`,
-      status: 'INVESTIGATING',
-      metadata: {
-        slot: 1,
-        detectionApi: 'TelephonyManager.ACTION_SIM_CARD_STATE_CHANGED',
-      },
-    });
-  };
-
-  const simulateRogueCommandAlert = () => {
-    if (!selectedDevice) return;
-    addSecurityEvent({
-      deviceId: selectedDevice.deviceId,
-      deviceName: selectedDevice.deviceName,
-      ownerId: selectedDevice.ownerId,
-      eventType: 'UNAUTHORIZED_COMMAND_ATTEMPT',
-      severity: 'CRITICAL',
-      description: `Unauthorized remote unlock command intercepted. Origin IP did not possess valid owner token. Command blocked.`,
-      status: 'ACTION_REQUIRED',
-      metadata: {
-        blockedIp: '203.0.113.89',
-        targetCommand: 'DEVICE_UNLOCK',
-      },
-    });
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 border border-blue-500/30 text-blue-300">
-              SECURITY OPERATIONS CENTER
-            </span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Security Overview
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Security Center
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Real-time telemetry surveillance, threat matrix monitoring, and anomaly detection.
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Monitor real-time security events, threat evaluations, and device anomalies.
           </p>
         </div>
 
-        {/* Test alert injection buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={simulateSimChangeAlert}
-            className="cyber-btn-secondary text-xs"
-            title="Simulate SIM extraction detection event"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>Simulate SIM Eject</span>
-          </button>
-
-          <button
-            onClick={simulateRogueCommandAlert}
-            className="cyber-btn-danger text-xs"
-            title="Simulate rogue command block"
-          >
-            <AlertOctagon className="w-3.5 h-3.5 text-rose-400" />
-            <span>Simulate Intrusion</span>
-          </button>
-        </div>
+        <button
+          onClick={() => onNavigate('history')}
+          className="cyber-btn-secondary text-xs"
+        >
+          <span>View Audit History</span>
+        </button>
       </div>
 
-      {/* 4 Security Overview Summary Cards */}
+      {/* KPI Cards: Threat Level, Active Alerts, Security Events, Protected Devices */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Threat Level */}
-        <MetricCard
-          title="Threat Level"
-          value={threat.level}
-          subtitle={threat.level === 'LOW' ? 'Normal baseline security posture' : 'Active anomalies under monitoring'}
-          icon={ShieldAlert}
-          variant={threat.level === 'HIGH' ? 'danger' : threat.level === 'MEDIUM' ? 'warning' : 'emerald'}
-          badge={threat.badge}
-        />
+        <div className="cyber-card p-5 space-y-1">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+            Threat Level
+          </span>
+          <h3 className={`text-2xl font-bold tracking-tight ${threat.color}`}>
+            {threat.level}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {threat.level === 'LOW' ? 'Normal threat status' : 'Active investigation'}
+          </p>
+        </div>
 
-        {/* Active Alerts */}
-        <MetricCard
-          title="Active Alerts"
-          value={counts.CRITICAL + counts.HIGH}
-          subtitle="Critical and High priority alerts"
-          icon={AlertTriangle}
-          variant={counts.CRITICAL > 0 ? 'danger' : counts.HIGH > 0 ? 'warning' : 'slate'}
-          badge={`${counts.CRITICAL} Critical`}
-        />
+        <div className="cyber-card p-5 space-y-1">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+            Active Alerts
+          </span>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {counts.CRITICAL + counts.HIGH}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {counts.CRITICAL} Critical • {counts.HIGH} High
+          </p>
+        </div>
 
-        {/* Security Events */}
-        <MetricCard
-          title="Security Events"
-          value={securityEvents.length}
-          subtitle="Total recorded security audits"
-          icon={Activity}
-          variant="blue"
-          badge="Live Streaming"
-        />
+        <div className="cyber-card p-5 space-y-1">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+            Security Events
+          </span>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {securityEvents.length}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Recorded in session audit
+          </p>
+        </div>
 
-        {/* Device Status */}
-        <MetricCard
-          title="Device Status"
-          value={selectedDevice?.status === 'online' ? 'Online' : selectedDevice?.status === 'lost' ? 'Lost' : 'Offline'}
-          subtitle={selectedDevice ? selectedDevice.deviceName : 'No target selected'}
-          icon={Smartphone}
-          variant={selectedDevice?.status === 'online' ? 'emerald' : selectedDevice?.status === 'lost' ? 'danger' : 'slate'}
-          badge={selectedDevice?.status === 'online' ? '🟢 Online' : 'Target Link'}
-        />
+        <div className="cyber-card p-5 space-y-1">
+          <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+            Protected Devices
+          </span>
+          <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            1
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Enrolled Android Hardware
+          </p>
+        </div>
       </div>
 
-      {/* Main SOC Layout: Alerts Stream & Timeline */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Security Event Timeline & Filter Card */}
+      <div className="cyber-card p-6 space-y-4">
         
-        {/* Left 2 Cols: Security Alerts List & Filter */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="cyber-card p-5 space-y-4">
-            
-            {/* Filter and Search Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
-              {/* Severity Pills */}
-              <div className="flex flex-wrap gap-1.5">
-                {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => {
-                  const isActive = filterSeverity === sev;
-                  return (
-                    <button
-                      key={sev}
-                      onClick={() => setFilterSeverity(sev)}
-                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-[#1A2537] text-slate-400 hover:text-white hover:bg-[#223046]'
-                      }`}
-                    >
-                      {sev} {sev !== 'ALL' && `(${counts[sev as keyof typeof counts]})`}
-                    </button>
-                  );
-                })}
-              </div>
+        {/* Controls: Search & Severity Filters */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+          <div className="relative flex-1 max-w-sm">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search security events..."
+              className="w-full pl-9 pr-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/[0.1] bg-slate-50 dark:bg-[#101827] text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+          </div>
 
-              {/* Search Field */}
-              <div className="relative">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Filter events..."
-                  className="bg-[#0B1120] border border-white/[0.1] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 w-full sm:w-48"
-                />
-              </div>
-            </div>
-
-            {/* Alerts List */}
-            <div className="space-y-3">
-              {filteredEvents.length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs">
-                  No security alerts match the current filter.
-                </div>
-              ) : (
-                filteredEvents.map((evt) => (
-                  <div
-                    key={evt.eventId}
-                    className="p-4 bg-[#1A2537] border border-white/[0.06] rounded-xl space-y-2 hover:border-white/[0.12] transition-colors"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <SeverityBadge severity={evt.severity} />
-                        <span className="font-semibold text-white text-xs">
-                          {evt.eventType.replace(/_/g, ' ')}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-                        <Clock className="w-3 h-3" />
-                        <span>{new Date(evt.timestamp).toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-slate-300 leading-relaxed">
-                      {evt.description}
-                    </p>
-
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/[0.04] text-[11px] text-slate-400">
-                      <span>Device: <strong className="text-slate-300">{evt.deviceName || evt.deviceId}</strong></span>
-                      <span className="font-mono text-emerald-400 font-medium">Status: {evt.status}</span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
+          <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
+            {['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'].map((sev) => (
+              <button
+                key={sev}
+                onClick={() => setFilterSeverity(sev)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                  filterSeverity === sev 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {sev}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Right Col: Activity Timeline */}
-        <div className="space-y-6">
-          
-          <div className="cyber-card p-5 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-white/[0.08]">
-              <Activity className="w-4 h-4 text-blue-400" />
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                Activity Timeline
-              </h3>
+        {/* Event List */}
+        <div className="space-y-3 pt-1">
+          {filteredEvents.length === 0 ? (
+            <div className="text-center py-8 text-xs text-slate-400">
+              No security events matching filter criteria.
             </div>
-
-            <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-white/[0.06]">
-              {securityEvents.slice(0, 6).map((evt, idx) => (
-                <div key={idx} className="flex items-start gap-3 relative">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 z-10 ${
-                    evt.severity === 'CRITICAL' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40' :
-                    evt.severity === 'HIGH' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
-                    'bg-blue-500/15 text-blue-400 border border-blue-500/30'
-                  }`}>
-                    <ShieldAlert className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="bg-[#1A2537] border border-white/[0.06] rounded-xl p-3 flex-1 space-y-1">
-                    <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-semibold text-white truncate max-w-[130px]">
-                        {evt.eventType.replace(/_/g, ' ')}
+          ) : (
+            filteredEvents.map((event) => (
+              <div 
+                key={event.eventId}
+                className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-200 dark:hover:border-white/[0.08] transition-colors"
+              >
+                <div className="space-y-1.5 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <SeverityBadge severity={event.severity} />
+                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                      {event.eventType.replace(/_/g, ' ')}
+                    </span>
+                    {event.deviceName && (
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        • {event.deviceName}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {new Date(evt.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-400 leading-snug">
-                      {evt.description}
-                    </p>
+                    )}
                   </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {event.description}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Defense Posture Standards */}
-          <div className="cyber-card p-5 space-y-3 text-xs">
-            <div className="flex items-center gap-2 text-blue-400 font-bold">
-              <ShieldCheck className="w-4 h-4" />
-              <span>SOC Threat Mitigation Protocols</span>
-            </div>
-            <p className="text-slate-400 leading-relaxed text-[11px]">
-              SecureLock employs continuous cryptographic validation and tamper triggers:
-            </p>
-            <ul className="text-[11px] text-slate-300 space-y-1.5 pt-1">
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                <span>Immediate SIM hot-swap and telephony event trapping</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                <span>Encrypted token validation on all remote command receipts</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                <span>Automatic trigger log archival in Firestore audit stream</span>
-              </li>
-            </ul>
-          </div>
-
+                <div className="text-[11px] text-slate-400 font-mono shrink-0">
+                  {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
       </div>

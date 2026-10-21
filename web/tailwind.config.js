@@ -8,30 +8,42 @@ export default {
   theme: {
     extend: {
       colors: {
+        saas: {
+          bg: '#F7F8FA',
+          card: '#FFFFFF',
+          text: '#111827',
+          muted: '#6B7280',
+          border: '#E5E7EB',
+          blue: '#2563EB',
+          blueHover: '#1D4ED8',
+          success: '#16A34A',
+          warning: '#D97706',
+          danger: '#DC2626',
+        },
         cyber: {
-          bg: '#0B1120',       // Main background: Deep charcoal navy
-          surface: '#111827',  // Secondary background
-          card: '#151E2E',     // Card background
-          elevated: '#1A2537', // Elevated card / modal
+          bg: '#0A0F1C',       // Dark background
+          surface: '#101827',  // Dark secondary surface
+          card: '#141D2E',     // Dark card
+          elevated: '#182235', // Dark elevated surface
           border: 'rgba(255, 255, 255, 0.08)',
-          blue: '#3B82F6',     // Primary electric blue
-          blueHover: '#60A5FA',// Primary hover
-          cyan: '#22D3EE',     // Secondary accent cyan
-          success: '#22C55E',  // Success green
-          warning: '#F59E0B',  // Warning amber
-          danger: '#EF4444',   // Danger red
+          blue: '#2563EB',     // Muted primary blue
+          blueHover: '#3B82F6',
+          cyan: '#06B6D4',
+          success: '#22C55E',
+          warning: '#F59E0B',
+          danger: '#EF4444',
           
-          // Legacy mappings preserved for backward compatibility
-          950: '#0B1120',
-          900: '#111827',
-          850: '#151E2E',
-          800: '#1A2537',
+          // Preserved for legacy mappings
+          950: '#0A0F1C',
+          900: '#101827',
+          850: '#141D2E',
+          800: '#182235',
           700: '#26354D',
           600: '#475569',
           500: '#64748b',
           400: '#94a3b8',
-          accent: '#3B82F6',
-          neon: '#22D3EE',
+          accent: '#2563EB',
+          neon: '#06B6D4',
         }
       },
       fontFamily: {
@@ -39,11 +51,11 @@ export default {
         mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
       },
       boxShadow: {
-        'enterprise': '0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4)',
-        'enterprise-lg': '0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
-        'subtle-blue': '0 0 20px -3px rgba(59, 130, 246, 0.15)',
-        'subtle-danger': '0 0 20px -3px rgba(239, 68, 68, 0.2)',
-        'subtle-success': '0 0 20px -3px rgba(34, 197, 94, 0.15)',
+        'clean': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+        'clean-md': '0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05)',
+        'clean-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+        'enterprise': '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08)',
+        'enterprise-lg': '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
       }
     },
   },

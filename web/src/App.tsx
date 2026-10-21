@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DeviceProvider } from './context/DeviceContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
 import { Footer } from './components/layout/Footer';
@@ -50,9 +51,9 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B1120] flex flex-col items-center justify-center space-y-4">
-        <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin"></div>
-        <p className="text-xs font-mono text-slate-400 tracking-wider uppercase">Loading SecureLock System...</p>
+      <div className="min-h-screen bg-[#F7F8FA] dark:bg-[#0A0F1C] flex flex-col items-center justify-center space-y-4">
+        <div className="w-8 h-8 rounded-full border-2 border-blue-600 border-t-transparent animate-spin"></div>
+        <p className="text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wider">Loading SecureLock...</p>
       </div>
     );
   }
@@ -98,7 +99,7 @@ const AppContent: React.FC = () => {
 
   return (
     <DeviceProvider>
-      <div className="min-h-screen bg-[#0B1120] text-slate-100 flex flex-col font-sans selection:bg-blue-600/30 selection:text-blue-200">
+      <div className="min-h-screen bg-[#F7F8FA] dark:bg-[#0A0F1C] text-[#111827] dark:text-[#F9FAFB] flex flex-col font-sans selection:bg-blue-600/20 selection:text-blue-700 dark:selection:text-blue-300 transition-colors duration-200">
         
         {/* Top Navbar */}
         <Navbar 
@@ -135,8 +136,10 @@ const AppContent: React.FC = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
