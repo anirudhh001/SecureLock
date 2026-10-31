@@ -8,20 +8,73 @@ export interface JammuArea {
   landmark: string;
   description: string;
   pincode: string;
+  isGandhiNagarDot?: boolean;
 }
 
 export const JAMMU_AREAS: JammuArea[] = [
+  // --- Gandhi Nagar Main & Extra Dots ---
   {
     id: 'gandhi-nagar',
-    name: 'Gandhi Nagar',
+    name: 'Gandhi Nagar (Central Gole Market)',
     category: 'Commercial',
     latitude: 32.7065,
     longitude: 74.8652,
     address: 'Gandhi Nagar, Gole Market, Jammu, J&K 180004',
-    landmark: 'Gole Market & Apsara Road Hub',
-    description: 'Premier commercial and executive enclave south of River Tawi.',
+    landmark: 'Gole Market Circle & Commercial Hub',
+    description: 'Central roundabout and prominent commercial core of Gandhi Nagar.',
     pincode: '180004',
+    isGandhiNagarDot: true,
   },
+  {
+    id: 'gandhi-nagar-apsara',
+    name: 'Gandhi Nagar (Apsara Road)',
+    category: 'Commercial',
+    latitude: 32.7042,
+    longitude: 74.8628,
+    address: 'Apsara Road, Gandhi Nagar, Jammu, J&K 180004',
+    landmark: 'Apsara Multiplex & High Street Market',
+    description: 'Famous premier shopping street and fashion boulevard in Gandhi Nagar.',
+    pincode: '180004',
+    isGandhiNagarDot: true,
+  },
+  {
+    id: 'gandhi-nagar-greenbelt',
+    name: 'Gandhi Nagar (Green Belt Park)',
+    category: 'Residential',
+    latitude: 32.7092,
+    longitude: 74.8678,
+    address: 'Green Belt Park, Gandhi Nagar, Jammu, J&K 180004',
+    landmark: 'Green Belt Promenade & Jogging Track',
+    description: 'Scenic municipal recreational promenade traversing upper Gandhi Nagar.',
+    pincode: '180004',
+    isGandhiNagarDot: true,
+  },
+  {
+    id: 'gandhi-nagar-hospital',
+    name: 'Gandhi Nagar (Govt Hospital / Block A)',
+    category: 'Administrative',
+    latitude: 32.7025,
+    longitude: 74.8688,
+    address: 'Govt Hospital Road, Block A, Gandhi Nagar, Jammu, J&K 180004',
+    landmark: 'Govt Hospital & Emergency Enclave',
+    description: 'Key healthcare and administrative public infrastructure zone in Gandhi Nagar.',
+    pincode: '180004',
+    isGandhiNagarDot: true,
+  },
+  {
+    id: 'gandhi-nagar-church',
+    name: 'Gandhi Nagar (Church Road / Auqaf)',
+    category: 'Heritage',
+    latitude: 32.7078,
+    longitude: 74.8615,
+    address: 'Church Road, Near Auqaf Complex, Gandhi Nagar, Jammu 180004',
+    landmark: 'St. Mary Church & Auqaf Commercial Complex',
+    description: 'North-western heritage and institutional corridor of Gandhi Nagar.',
+    pincode: '180004',
+    isGandhiNagarDot: true,
+  },
+
+  // --- Other Key Jammu Sectors ---
   {
     id: 'bahu-fort',
     name: 'Bahu Fort & Bagh-e-Bahu',

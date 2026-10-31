@@ -74,11 +74,13 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
     (a) => Math.abs(a.latitude - location.latitude) < 0.003 && Math.abs(a.longitude - location.longitude) < 0.003
   );
 
-  const categories = ['All', 'Commercial', 'Heritage', 'Residential', 'Transit', 'Academic', 'Administrative'];
+  const categories = ['All', 'Gandhi Nagar Dots', 'Commercial', 'Heritage', 'Residential', 'Transit', 'Academic', 'Administrative'];
 
   const filteredAreas = activeCategory === 'All' 
     ? JAMMU_AREAS 
-    : JAMMU_AREAS.filter((a) => a.category === activeCategory);
+    : activeCategory === 'Gandhi Nagar Dots'
+      ? JAMMU_AREAS.filter((a) => a.isGandhiNagarDot)
+      : JAMMU_AREAS.filter((a) => a.category === activeCategory);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -345,9 +347,15 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
                         {area.category}
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400">
-                      PIN {area.pincode}
-                    </span>
+                    {area.isGandhiNagarDot ? (
+                      <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                        🟢 Gandhi Nagar Dot
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-mono text-slate-400">
+                        PIN {area.pincode}
+                      </span>
+                    )}
                   </div>
 
                   <h4 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">

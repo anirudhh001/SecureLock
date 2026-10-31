@@ -149,19 +149,28 @@ export const InteractiveMap: React.FC<Props> = ({
           Math.abs(area.latitude - location.latitude) < 0.0015 &&
           Math.abs(area.longitude - location.longitude) < 0.0015;
 
-        // Custom styled pill badge for each area of Jammu
+        // Custom styled pill badge for each area of Jammu with extra pulsing dots for Gandhi Nagar
+        const isGandhiNagar = Boolean(area.isGandhiNagarDot);
+
         const areaBadgeIcon = L.divIcon({
           className: 'jammu-area-pill',
           html: `
-            <div style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px; background: ${
-              isCurrentLocation ? 'rgba(37, 99, 235, 0.95)' : 'rgba(15, 23, 42, 0.88)'
-            }; border: 1.5px solid ${
-              isCurrentLocation ? '#60A5FA' : 'rgba(56, 189, 248, 0.55)'
-            }; backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 9999px; box-shadow: 0 3px 8px rgba(0,0,0,0.4); transform: translate(-50%, -50%); transition: all 0.2s ease;">
-              <span style="width: 6px; height: 6px; border-radius: 50%; background: ${
-                isCurrentLocation ? '#FFFFFF' : '#38BDF8'
-              }; box-shadow: 0 0 6px ${isCurrentLocation ? '#FFFFFF' : '#38BDF8'};"></span>
-              <span style="font-family: 'Inter', system-ui, sans-serif; font-size: 10px; font-weight: 600; color: #FFFFFF; white-space: nowrap; letter-spacing: -0.01em;">${area.name}</span>
+            <div style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px; background: ${
+              isCurrentLocation 
+                ? 'rgba(37, 99, 235, 0.95)' 
+                : isGandhiNagar 
+                  ? 'rgba(15, 23, 42, 0.94)' 
+                  : 'rgba(15, 23, 42, 0.88)'
+            }; border: ${isGandhiNagar ? '1.5px solid #10B981' : isCurrentLocation ? '1.5px solid #60A5FA' : '1px solid rgba(56, 189, 248, 0.55)'}; backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 9999px; box-shadow: ${isGandhiNagar ? '0 0 10px rgba(16, 185, 129, 0.45)' : '0 3px 8px rgba(0,0,0,0.4)'}; transform: translate(-50%, -50%); transition: all 0.2s ease;">
+              <span style="position: relative; width: 8px; height: 8px; display: inline-flex; align-items: center; justify-content: center;">
+                ${isGandhiNagar ? `<span style="position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #10B981; opacity: 0.65; animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;"></span>` : ''}
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: ${
+                  isCurrentLocation ? '#FFFFFF' : isGandhiNagar ? '#10B981' : '#38BDF8'
+                }; box-shadow: 0 0 6px ${isCurrentLocation ? '#FFFFFF' : isGandhiNagar ? '#10B981' : '#38BDF8'};"></span>
+              </span>
+              <span style="font-family: 'Inter', system-ui, sans-serif; font-size: 10px; font-weight: 600; color: #FFFFFF; white-space: nowrap; letter-spacing: -0.01em;">
+                ${isGandhiNagar ? `🟢 ` : ''}${area.name}
+              </span>
             </div>
           `,
           iconSize: [0, 0],
@@ -224,6 +233,13 @@ export const InteractiveMap: React.FC<Props> = ({
   const handleFitJammu = () => {
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setView([32.7266, 74.8700], 12.5, { animate: true });
+    }
+  };
+
+  // Zoom into Gandhi Nagar with extra dots
+  const handleFocusGandhiNagar = () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setView([32.7065, 74.8652], 15.5, { animate: true });
     }
   };
 
@@ -392,6 +408,16 @@ export const InteractiveMap: React.FC<Props> = ({
         >
           {areasVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
           <span className="hidden sm:inline">{areasVisible ? 'Jammu Areas On' : 'Jammu Areas Off'}</span>
+        </button>
+
+        {/* Zoom into Gandhi Nagar Dots */}
+        <button
+          onClick={handleFocusGandhiNagar}
+          className="px-2.5 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-600 text-white backdrop-blur-md border border-emerald-500/80 text-xs font-medium shadow-md flex items-center gap-1.5 transition-all"
+          title="Zoom directly into Gandhi Nagar and inspect all sub-dots"
+        >
+          <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+          <span>Gandhi Nagar Dots</span>
         </button>
 
         {/* Zoom Out to Entire Jammu */}
