@@ -34,6 +34,10 @@ interface DeviceContextType {
   removeDevice: (deviceId: string) => Promise<boolean>;
   dispatchCommand: (deviceId: string, type: CommandType, payload?: any) => Promise<boolean>;
   requestLocation: (deviceId: string) => Promise<boolean>;
+  setDeviceLocation: (
+    deviceId: string, 
+    locationData: Partial<DeviceLocation> & { latitude: number; longitude: number; address: string }
+  ) => void;
   triggerAlarm: (deviceId: string) => Promise<boolean>;
   stopAlarm: (deviceId: string) => Promise<boolean>;
   triggerRemoteLock: (deviceId: string) => Promise<boolean>;
@@ -71,11 +75,18 @@ const LOCAL_STORAGE_EVENTS = 'securelock_events_data';
 export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   
-  // State initialization with localStorage fallback
+  // State initialization with localStorage fallback and Jammu migration
   const [devices, setDevices] = useState<Device[]>(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_DEVICES);
     if (stored) {
-      try { return JSON.parse(stored); } catch (e) { /* fallback */ }
+      try { 
+        const parsed: Device[] = JSON.parse(stored);
+        // Automatically migrate any older stored sessions with US/California coordinates to Jammu
+        if (Array.isArray(parsed) && parsed.some((d) => d.location && d.location.latitude > 35 && d.location.longitude < -100)) {
+          return INITIAL_DEVICES;
+        }
+        return parsed; 
+      } catch (e) { /* fallback */ }
     }
     return INITIAL_DEVICES;
   });
@@ -516,8 +527,8 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         (err) => {
           console.warn('[Geolocation] GPS fallback notice:', err.message);
           const target = devices.find((d) => d.deviceId === deviceId);
-          const baseLat = target?.location.latitude || 28.6139;
-          const baseLng = target?.location.longitude || 77.2090;
+          const baseLat = target?.location.latitude || 32.7065;
+          const baseLng = target?.location.longitude || 74.8652;
           const jitterLat = (Math.random() - 0.5) * 0.002;
           const jitterLng = (Math.random() - 0.5) * 0.002;
           applyLocationUpdate(baseLat + jitterLat, baseLng + jitterLng, 8.5);
@@ -526,12 +537,53 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       );
     } else {
       const target = devices.find((d) => d.deviceId === deviceId);
-      const baseLat = target?.location.latitude || 28.6139;
-      const baseLng = target?.location.longitude || 77.2090;
+      const baseLat = target?.location.latitude || 32.7065;
+      const baseLng = target?.location.longitude || 74.8652;
       applyLocationUpdate(baseLat, baseLng, 9.0);
     }
 
     return true;
+  };
+
+  const setDeviceLocation = (
+    deviceId: string, 
+    locationData: Partial<DeviceLocation> & { latitude: number; longitude: number; address: string }
+  ) => {
+    const newLoc: DeviceLocation = {
+      latitude: Number(locationData.latitude.toFixed(6)),
+      longitude: Number(locationData.longitude.toFixed(6)),
+      accuracy: locationData.accuracy || 5.0,
+      altitude: locationData.altitude || 327.0,
+      speed: locationData.speed || 0.0,
+      timestamp: new Date().toISOString(),
+      address: locationData.address,
+    };
+
+    setDevices((prev) =>
+      prev.map((d) => {
+        if (d.deviceId === deviceId) {
+          return {
+            ...d,
+            lastSeen: new Date().toISOString(),
+            location: newLoc,
+            locationHistory: [newLoc, ...(d.locationHistory || []).slice(0, 19)],
+          };
+        }
+        return d;
+      })
+    );
+
+    addSecurityEvent({
+      deviceId,
+      deviceName: selectedDevice?.deviceName,
+      ownerId: user?.uid || 'usr-cyber-owner-01',
+      eventType: 'LOCATION_POLL_REQUESTED',
+      severity: 'LOW',
+      description: `Device telemetry updated to ${locationData.address} (Jammu Sector Relocation).`,
+      status: 'RESOLVED',
+    });
+
+    logToTerminal(`[JAMMU_GPS] Telemetry updated to: ${locationData.address} (${newLoc.latitude.toFixed(4)}° N, ${newLoc.longitude.toFixed(4)}° E)`);
   };
 
   const triggerAlarm = async (deviceId: string): Promise<boolean> => {
@@ -819,6 +871,7 @@ export const DeviceProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         removeDevice,
         dispatchCommand,
         requestLocation,
+        setDeviceLocation,
         triggerAlarm,
         stopAlarm,
         triggerRemoteLock,
