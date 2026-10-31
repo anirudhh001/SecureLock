@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDevices } from '../context/DeviceContext';
 import { useAuth } from '../context/AuthContext';
+import { isFirebaseConfigured } from '../firebase/config';
 import { MetricCard } from '../components/common/MetricCard';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { InteractiveMap } from '../components/location/InteractiveMap';
@@ -46,6 +47,8 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
   const onlineDevices = devices.filter((d) => d.status === 'online').length;
   const lostDevices = devices.filter((d) => d.lostMode).length;
   const highAlerts = securityEvents.filter((e) => e.severity === 'CRITICAL' || e.severity === 'HIGH').length;
+
+  const isDemoMode = !isFirebaseConfigured || Boolean(user?.isDemoUser);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -265,15 +268,21 @@ export const DashboardPage: React.FC<Props> = ({ onNavigate }) => {
                   location={selectedDevice.location} 
                   deviceName={selectedDevice.deviceName}
                   history={selectedDevice.locationHistory}
+                  isDemo={isDemoMode}
                 />
               </div>
             )}
 
             {/* Below Map Coordinates Metadata */}
             {selectedDevice && (
-              <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
-                <div className="font-mono font-medium text-slate-700 dark:text-slate-300">
-                  {selectedDevice.location.latitude.toFixed(4)}° N, {selectedDevice.location.longitude.toFixed(4)}° E
+              <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1 gap-2">
+                <div className="flex items-center gap-2 font-mono font-medium text-slate-700 dark:text-slate-300">
+                  <span>{selectedDevice.location.latitude.toFixed(4)}° N, {selectedDevice.location.longitude.toFixed(4)}° E</span>
+                  {isDemoMode && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-sans bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                      Simulated Demo Fix
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-4">
                   <span>Accuracy ±{selectedDevice.location.accuracy} m</span>

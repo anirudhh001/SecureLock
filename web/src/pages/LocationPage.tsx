@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useDevices } from '../context/DeviceContext';
+import { useAuth } from '../context/AuthContext';
+import { isFirebaseConfigured } from '../firebase/config';
 import { InteractiveMap } from '../components/location/InteractiveMap';
 import { 
   MapPin, 
@@ -19,8 +21,11 @@ interface Props {
 }
 
 export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
+  const { user } = useAuth();
   const { selectedDevice, requestLocation } = useDevices();
   const [polling, setPolling] = useState(false);
+
+  const isDemoMode = !isFirebaseConfigured || Boolean(user?.isDemoUser);
 
   if (!selectedDevice) {
     return (
@@ -61,7 +66,7 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
             Device Location
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Last updated {new Date(location.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • Real-Time GPS Tracking
+            Last updated {new Date(location.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {isDemoMode ? 'Demonstration Mode (Simulated Telemetry)' : 'Real-Time Hardware GPS Tracking'}
           </p>
         </div>
 
@@ -74,6 +79,21 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
           <span>{polling ? 'Querying GPS...' : 'Update Location'}</span>
         </button>
       </div>
+
+      {/* Demonstration Mode Cybersecurity Notice (When in Demo Mode) */}
+      {isDemoMode && (
+        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-3">
+          <span className="p-1 rounded-md bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold shrink-0 text-[10px]">
+            DEMO
+          </span>
+          <div className="space-y-0.5">
+            <span className="font-semibold block">Simulated GPS Demonstration Telemetry</span>
+            <p className="text-[11px] text-amber-700/90 dark:text-amber-300/80 leading-relaxed">
+              Coordinates displayed below are simulated for prototype defense and viva evaluation. This demonstration telemetry does not claim to be the physical GPS position of an actual mobile handset until a live Android companion device is paired.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Main Map & Location Telemetry Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -105,13 +125,19 @@ export const LocationPage: React.FC<Props> = ({ onNavigate }) => {
               deviceName={selectedDevice.deviceName}
               history={locationHistory}
               zoom={15}
+              isDemo={isDemoMode}
             />
           </div>
 
           {/* Map Footer Metadata */}
-          <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
-            <div className="font-mono font-medium text-slate-800 dark:text-slate-200">
-              {location.latitude.toFixed(6)}° N, {location.longitude.toFixed(6)}° E
+          <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1 gap-2">
+            <div className="flex items-center gap-2 font-mono font-medium text-slate-800 dark:text-slate-200">
+              <span>{location.latitude.toFixed(6)}° N, {location.longitude.toFixed(6)}° E</span>
+              {isDemoMode && (
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-sans bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                  Simulated
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-4">
               <span>Accuracy ±{location.accuracy} m</span>

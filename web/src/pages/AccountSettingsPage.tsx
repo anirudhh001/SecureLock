@@ -275,6 +275,9 @@ export const AccountSettingsPage: React.FC<Props> = ({ onNavigate }) => {
                 <strong className="text-slate-900 dark:text-white">Architecture:</strong> Dual-Node Architecture (Web Application + Android Companion Daemon + Firebase Cloud)
               </p>
               <p>
+                <strong className="text-slate-900 dark:text-white">Mapping Engine:</strong> Leaflet + OpenStreetMap (100% Free & Open-Source • No API Key Required)
+              </p>
+              <p>
                 <strong className="text-slate-900 dark:text-white">Design Style:</strong> Modern Minimal SaaS (Light & Dark Mode)
               </p>
               <p>
